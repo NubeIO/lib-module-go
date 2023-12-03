@@ -2,27 +2,25 @@ package shared
 
 import (
 	"encoding/json"
-	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
-	argspkg "github.com/NubeIO/rubix-os/args"
-	"github.com/NubeIO/rubix-os/interfaces"
-	"github.com/NubeIO/rubix-os/module/common"
-	"github.com/NubeIO/rubix-os/mqttclient"
+	"github.com/NubeIO/lib-module-go/parser"
+	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
+	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 	"strconv"
 )
 
 type Marshaller interface {
-	GetNetwork(uuid string, args argspkg.Args) (*model.Network, error)
-	GetDevice(uuid string, args argspkg.Args) (*model.Device, error)
-	GetPoint(uuid string, args argspkg.Args) (*model.Point, error)
-	GetPoints(args argspkg.Args) ([]*model.Point, error)
+	GetNetwork(uuid string, args nargs.Args) (*model.Network, error)
+	GetDevice(uuid string, args nargs.Args) (*model.Device, error)
+	GetPoint(uuid string, args nargs.Args) (*model.Point, error)
+	GetPoints(args nargs.Args) ([]*model.Point, error)
 	CreateBulkPointsHistories(histories []*model.PointHistory) (bool, error)
 
-	GetNetworksByPluginName(pluginName string, args argspkg.Args) ([]*model.Network, error)
-	GetNetworkByName(networkName string, args argspkg.Args) (*model.Network, error)
+	GetNetworksByPluginName(pluginName string, args nargs.Args) ([]*model.Network, error)
+	GetNetworkByName(networkName string, args nargs.Args) (*model.Network, error)
 
-	GetOneNetworkByArgs(args argspkg.Args) (*model.Network, error)
-	GetOneDeviceByArgs(args argspkg.Args) (*model.Device, error)
-	GetOnePointByArgs(args argspkg.Args) (*model.Point, error)
+	GetOneNetworkByArgs(args nargs.Args) (*model.Network, error)
+	GetOneDeviceByArgs(args nargs.Args) (*model.Device, error)
+	GetOnePointByArgs(args nargs.Args) (*model.Point, error)
 
 	CreateNetwork(body *model.Network) (*model.Network, error)
 	CreateDevice(body *model.Device) (*model.Device, error)
@@ -30,7 +28,7 @@ type Marshaller interface {
 
 	UpdateNetwork(uuid string, body *model.Network) (*model.Network, error)
 	UpdateDevice(uuid string, body *model.Device) (*model.Device, error)
-	UpdatePoint(uuid string, body *model.Point, opts ...interfaces.UpdatePointOpts) (*model.Point, error)
+	UpdatePoint(uuid string, body *model.Point, opts ...model.UpdatePointOpts) (*model.Point, error)
 
 	UpdateNetworkErrors(uuid string, body *model.Network) error
 	UpdateDeviceErrors(uuid string, body *model.Device) error
@@ -41,13 +39,13 @@ type Marshaller interface {
 	DeleteDevice(uuid string) error
 	DeletePoint(uuid string) error
 
-	PointWrite(uuid string, pointWriter *model.PointWriter) (*common.PointWriteResponse, error)
+	PointWrite(uuid string, pointWriter *model.PointWriter) (*model.PointWriteResponse, error)
 
 	GetSchedules() ([]*model.Schedule, error)
 	UpdateScheduleAllProps(uuid string, body *model.Schedule) (*model.Schedule, error)
 
-	GetPlugin(pluginUUID string, args argspkg.Args) (*model.Plugin, error)
-	GetPluginByName(name string, args argspkg.Args) (*model.Plugin, error)
+	GetPlugin(pluginUUID string, args nargs.Args) (*model.Plugin, error)
+	GetPluginByName(name string, args nargs.Args) (*model.Plugin, error)
 	SetErrorsForAllDevicesOnNetwork(networkUUID, message, messageLevel, messageCode string, doPoints bool) error
 	ClearErrorsForAllDevicesOnNetwork(networkUUID string, doPoints bool) error
 	SetErrorsForAllPointsOnDevice(deviceUUID, message, messageLevel, messageCode string) error
@@ -55,8 +53,8 @@ type Marshaller interface {
 	WizardNewNetworkDevicePoint(plugin string, network *model.Network, device *model.Device, point *model.Point) (bool, error)
 	DeviceNameExistsInNetwork(deviceName, networkUUID string) (*model.Device, bool)
 
-	GetHosts(args argspkg.Args) ([]*model.Host, error)
-	GetHostsWithHistoryEnabled(args argspkg.Args) ([]*model.Host, error)
+	GetHosts(args nargs.Args) ([]*model.Host, error)
+	GetHostsWithHistoryEnabled(args nargs.Args) ([]*model.Host, error)
 	GetHistoryLogByHostUUID(hostUUID string) (*model.HistoryLog, error)
 	CloneEdge(host *model.Host) error
 	CreateBulkHistory(histories []*model.History) (bool, error)
@@ -65,25 +63,25 @@ type Marshaller interface {
 	GetHistoryPostgresLogLastSyncHistoryId() (int, error)
 	GetHistoriesForPostgresSync(lastSyncId int) ([]*model.History, error)
 	UpdateHistoryPostgresLog(log *model.HistoryPostgresLog) (*model.HistoryPostgresLog, error)
-	GetPointsForPostgresSync() ([]*interfaces.PointForPostgresSync, error)
-	GetNetworksTagsForPostgresSync() ([]*interfaces.NetworkTagForPostgresSync, error)
-	GetDevicesTagsForPostgresSync() ([]*interfaces.DeviceTagForPostgresSync, error)
-	GetPointsTagsForPostgresSync() ([]*interfaces.PointTagForPostgresSync, error)
+	GetPointsForPostgresSync() ([]*model.PointForPostgresSync, error)
+	GetNetworksTagsForPostgresSync() ([]*model.NetworkTagForPostgresSync, error)
+	GetDevicesTagsForPostgresSync() ([]*model.DeviceTagForPostgresSync, error)
+	GetPointsTagsForPostgresSync() ([]*model.PointTagForPostgresSync, error)
 	GetNetworksMetaTagsForPostgresSync() ([]*model.NetworkMetaTag, error)
 	GetDevicesMetaTagsForPostgresSync() ([]*model.DeviceMetaTag, error)
 	GetPointsMetaTagsForPostgresSync() ([]*model.PointMetaTag, error)
 	GetPointHistoriesMissingTimestamps(pointUUID string) ([]string, error)
 
-	Publish(topic string, qos mqttclient.QOS, retain bool, payload string) error
-	PublishNonBuffer(topic string, qos mqttclient.QOS, retain bool, payload interface{}) error
+	Publish(topic string, qos model.QOS, retain bool, payload string) error
+	PublishNonBuffer(topic string, qos model.QOS, retain bool, payload interface{}) error
 }
 
 type GRPCMarshaller struct {
 	DbHelper DBHelper
 }
 
-func (g *GRPCMarshaller) GetNetwork(uuid string, args argspkg.Args) (*model.Network, error) {
-	serializedArgs, err := args.SerializeArgs(args)
+func (g *GRPCMarshaller) GetNetwork(uuid string, args nargs.Args) (*model.Network, error) {
+	serializedArgs, err := parser.SerializeArgs(args)
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +97,8 @@ func (g *GRPCMarshaller) GetNetwork(uuid string, args argspkg.Args) (*model.Netw
 	return network, nil
 }
 
-func (g *GRPCMarshaller) GetDevice(uuid string, args argspkg.Args) (*model.Device, error) {
-	serializedArgs, err := args.SerializeArgs(args)
+func (g *GRPCMarshaller) GetDevice(uuid string, args nargs.Args) (*model.Device, error) {
+	serializedArgs, err := parser.SerializeArgs(args)
 	if err != nil {
 		return nil, err
 	}
@@ -116,8 +114,8 @@ func (g *GRPCMarshaller) GetDevice(uuid string, args argspkg.Args) (*model.Devic
 	return device, nil
 }
 
-func (g *GRPCMarshaller) GetPoint(uuid string, args argspkg.Args) (*model.Point, error) {
-	serializedArgs, err := args.SerializeArgs(args)
+func (g *GRPCMarshaller) GetPoint(uuid string, args nargs.Args) (*model.Point, error) {
+	serializedArgs, err := parser.SerializeArgs(args)
 	if err != nil {
 		return nil, err
 	}
@@ -133,8 +131,8 @@ func (g *GRPCMarshaller) GetPoint(uuid string, args argspkg.Args) (*model.Point,
 	return point, nil
 }
 
-func (g *GRPCMarshaller) GetPoints(args argspkg.Args) ([]*model.Point, error) {
-	serializedArgs, err := args.SerializeArgs(args)
+func (g *GRPCMarshaller) GetPoints(args nargs.Args) ([]*model.Point, error) {
+	serializedArgs, err := parser.SerializeArgs(args)
 	if err != nil {
 		return nil, err
 	}
@@ -162,8 +160,8 @@ func (g *GRPCMarshaller) CreateBulkPointsHistories(histories []*model.PointHisto
 	return true, nil
 }
 
-func (g *GRPCMarshaller) GetNetworksByPluginName(pluginName string, args argspkg.Args) ([]*model.Network, error) {
-	serializedArgs, err := args.SerializeArgs(args)
+func (g *GRPCMarshaller) GetNetworksByPluginName(pluginName string, args nargs.Args) ([]*model.Network, error) {
+	serializedArgs, err := parser.SerializeArgs(args)
 	if err != nil {
 		return nil, err
 	}
@@ -179,8 +177,8 @@ func (g *GRPCMarshaller) GetNetworksByPluginName(pluginName string, args argspkg
 	return networks, nil
 }
 
-func (g *GRPCMarshaller) GetNetworkByName(networkName string, args argspkg.Args) (*model.Network, error) {
-	serializedArgs, err := args.SerializeArgs(args)
+func (g *GRPCMarshaller) GetNetworkByName(networkName string, args nargs.Args) (*model.Network, error) {
+	serializedArgs, err := parser.SerializeArgs(args)
 	if err != nil {
 		return nil, err
 	}
@@ -196,8 +194,8 @@ func (g *GRPCMarshaller) GetNetworkByName(networkName string, args argspkg.Args)
 	return network, nil
 }
 
-func (g *GRPCMarshaller) GetOneNetworkByArgs(args argspkg.Args) (*model.Network, error) {
-	serializedArgs, err := args.SerializeArgs(args)
+func (g *GRPCMarshaller) GetOneNetworkByArgs(args nargs.Args) (*model.Network, error) {
+	serializedArgs, err := parser.SerializeArgs(args)
 	if err != nil {
 		return nil, err
 	}
@@ -213,8 +211,8 @@ func (g *GRPCMarshaller) GetOneNetworkByArgs(args argspkg.Args) (*model.Network,
 	return network, nil
 }
 
-func (g *GRPCMarshaller) GetOneDeviceByArgs(args argspkg.Args) (*model.Device, error) {
-	serializedArgs, err := args.SerializeArgs(args)
+func (g *GRPCMarshaller) GetOneDeviceByArgs(args nargs.Args) (*model.Device, error) {
+	serializedArgs, err := parser.SerializeArgs(args)
 	if err != nil {
 		return nil, err
 	}
@@ -230,8 +228,8 @@ func (g *GRPCMarshaller) GetOneDeviceByArgs(args argspkg.Args) (*model.Device, e
 	return device, nil
 }
 
-func (g *GRPCMarshaller) GetOnePointByArgs(args argspkg.Args) (*model.Point, error) {
-	serializedArgs, err := args.SerializeArgs(args)
+func (g *GRPCMarshaller) GetOnePointByArgs(args nargs.Args) (*model.Point, error) {
+	serializedArgs, err := parser.SerializeArgs(args)
 	if err != nil {
 		return nil, err
 	}
@@ -332,7 +330,7 @@ func (g *GRPCMarshaller) UpdateDevice(uuid string, body *model.Device) (*model.D
 	return device, nil
 }
 
-func (g *GRPCMarshaller) UpdatePoint(uuid string, body *model.Point, opts ...interfaces.UpdatePointOpts) (*model.Point, error) {
+func (g *GRPCMarshaller) UpdatePoint(uuid string, body *model.Point, opts ...model.UpdatePointOpts) (*model.Point, error) {
 	var res []byte
 	var err error
 	pnt, err := json.Marshal(body)
@@ -422,7 +420,7 @@ func (g *GRPCMarshaller) DeletePoint(uuid string) error {
 	return err
 }
 
-func (g *GRPCMarshaller) PointWrite(uuid string, pointWriter *model.PointWriter) (*common.PointWriteResponse, error) {
+func (g *GRPCMarshaller) PointWrite(uuid string, pointWriter *model.PointWriter) (*model.PointWriteResponse, error) {
 	pw, err := json.Marshal(pointWriter)
 	if err != nil {
 		return nil, err
@@ -431,7 +429,7 @@ func (g *GRPCMarshaller) PointWrite(uuid string, pointWriter *model.PointWriter)
 	if err != nil {
 		return nil, err
 	}
-	var pwr *common.PointWriteResponse
+	var pwr *model.PointWriteResponse
 	err = json.Unmarshal(res, &pwr)
 	if err != nil {
 		return nil, err
@@ -470,8 +468,8 @@ func (g *GRPCMarshaller) UpdateScheduleAllProps(uuid string, body *model.Schedul
 	return schedule, nil
 }
 
-func (g *GRPCMarshaller) GetPlugin(pluginUUID string, args argspkg.Args) (*model.Plugin, error) {
-	serializedArgs, err := args.SerializeArgs(args)
+func (g *GRPCMarshaller) GetPlugin(pluginUUID string, args nargs.Args) (*model.Plugin, error) {
+	serializedArgs, err := parser.SerializeArgs(args)
 	if err != nil {
 		return nil, err
 	}
@@ -487,8 +485,8 @@ func (g *GRPCMarshaller) GetPlugin(pluginUUID string, args argspkg.Args) (*model
 	return pluginConf, nil
 }
 
-func (g *GRPCMarshaller) GetPluginByName(name string, args argspkg.Args) (*model.Plugin, error) {
-	serializedArgs, err := args.SerializeArgs(args)
+func (g *GRPCMarshaller) GetPluginByName(name string, args nargs.Args) (*model.Plugin, error) {
+	serializedArgs, err := parser.SerializeArgs(args)
 	if err != nil {
 		return nil, err
 	}
@@ -554,7 +552,7 @@ func (g *GRPCMarshaller) WizardNewNetworkDevicePoint(plugin string, network *mod
 }
 
 func (g *GRPCMarshaller) DeviceNameExistsInNetwork(deviceName, networkUUID string) (*model.Device, bool) {
-	network, err := g.GetNetwork(networkUUID, argspkg.Args{})
+	network, err := g.GetNetwork(networkUUID, nargs.Args{})
 	if err != nil {
 		return nil, false
 	}
@@ -566,8 +564,8 @@ func (g *GRPCMarshaller) DeviceNameExistsInNetwork(deviceName, networkUUID strin
 	return nil, false
 }
 
-func (g *GRPCMarshaller) GetHosts(args argspkg.Args) ([]*model.Host, error) {
-	serializedArgs, err := args.SerializeArgs(args)
+func (g *GRPCMarshaller) GetHosts(args nargs.Args) ([]*model.Host, error) {
+	serializedArgs, err := parser.SerializeArgs(args)
 	if err != nil {
 		return nil, err
 	}
@@ -583,8 +581,8 @@ func (g *GRPCMarshaller) GetHosts(args argspkg.Args) ([]*model.Host, error) {
 	return hosts, nil
 }
 
-func (g *GRPCMarshaller) GetHostsWithHistoryEnabled(args argspkg.Args) ([]*model.Host, error) {
-	serializedArgs, err := args.SerializeArgs(args)
+func (g *GRPCMarshaller) GetHostsWithHistoryEnabled(args nargs.Args) ([]*model.Host, error) {
+	serializedArgs, err := parser.SerializeArgs(args)
 	if err != nil {
 		return nil, err
 	}
@@ -693,12 +691,12 @@ func (g *GRPCMarshaller) UpdateHistoryPostgresLog(log *model.HistoryPostgresLog)
 	return updatedLog, nil
 }
 
-func (g *GRPCMarshaller) GetPointsForPostgresSync() ([]*interfaces.PointForPostgresSync, error) {
+func (g *GRPCMarshaller) GetPointsForPostgresSync() ([]*model.PointForPostgresSync, error) {
 	resp, err := g.DbHelper.GetWithoutParam("points_for_postgres_sync", "")
 	if err != nil {
 		return nil, err
 	}
-	var r []*interfaces.PointForPostgresSync
+	var r []*model.PointForPostgresSync
 	err = json.Unmarshal(resp, &r)
 	if err != nil {
 		return nil, err
@@ -706,12 +704,12 @@ func (g *GRPCMarshaller) GetPointsForPostgresSync() ([]*interfaces.PointForPostg
 	return r, nil
 }
 
-func (g *GRPCMarshaller) GetNetworksTagsForPostgresSync() ([]*interfaces.NetworkTagForPostgresSync, error) {
+func (g *GRPCMarshaller) GetNetworksTagsForPostgresSync() ([]*model.NetworkTagForPostgresSync, error) {
 	resp, err := g.DbHelper.GetWithoutParam("networks_tags_for_postgres_sync", "")
 	if err != nil {
 		return nil, err
 	}
-	var r []*interfaces.NetworkTagForPostgresSync
+	var r []*model.NetworkTagForPostgresSync
 	err = json.Unmarshal(resp, &r)
 	if err != nil {
 		return nil, err
@@ -719,12 +717,12 @@ func (g *GRPCMarshaller) GetNetworksTagsForPostgresSync() ([]*interfaces.Network
 	return r, nil
 }
 
-func (g *GRPCMarshaller) GetDevicesTagsForPostgresSync() ([]*interfaces.DeviceTagForPostgresSync, error) {
+func (g *GRPCMarshaller) GetDevicesTagsForPostgresSync() ([]*model.DeviceTagForPostgresSync, error) {
 	resp, err := g.DbHelper.GetWithoutParam("devices_tags_for_postgres_sync", "")
 	if err != nil {
 		return nil, err
 	}
-	var r []*interfaces.DeviceTagForPostgresSync
+	var r []*model.DeviceTagForPostgresSync
 	err = json.Unmarshal(resp, &r)
 	if err != nil {
 		return nil, err
@@ -732,12 +730,12 @@ func (g *GRPCMarshaller) GetDevicesTagsForPostgresSync() ([]*interfaces.DeviceTa
 	return r, nil
 }
 
-func (g *GRPCMarshaller) GetPointsTagsForPostgresSync() ([]*interfaces.PointTagForPostgresSync, error) {
+func (g *GRPCMarshaller) GetPointsTagsForPostgresSync() ([]*model.PointTagForPostgresSync, error) {
 	resp, err := g.DbHelper.GetWithoutParam("points_tags_for_postgres_sync", "")
 	if err != nil {
 		return nil, err
 	}
-	var r []*interfaces.PointTagForPostgresSync
+	var r []*model.PointTagForPostgresSync
 	err = json.Unmarshal(resp, &r)
 	if err != nil {
 		return nil, err
@@ -797,7 +795,7 @@ func (g *GRPCMarshaller) GetPointHistoriesMissingTimestamps(pointUUID string) ([
 	return missingTimestamps, nil
 }
 
-func (g *GRPCMarshaller) Publish(topic string, qos mqttclient.QOS, retain bool, payload string) error {
+func (g *GRPCMarshaller) Publish(topic string, qos model.QOS, retain bool, payload string) error {
 	qosBytes, err := json.Marshal(qos)
 	if err != nil {
 		return err
@@ -809,14 +807,13 @@ func (g *GRPCMarshaller) Publish(topic string, qos mqttclient.QOS, retain bool, 
 	return nil
 }
 
-func (g *GRPCMarshaller) PublishNonBuffer(topic string, qos mqttclient.QOS, retain bool, payload interface{}) error {
-	var qosBytes, body []byte
+func (g *GRPCMarshaller) PublishNonBuffer(topic string, qos model.QOS, retain bool, payload interface{}) error {
 	var err error
-	qosBytes, err = json.Marshal(qos)
+	qosBytes, err := json.Marshal(qos)
 	if err != nil {
 		return err
 	}
-	body, err = json.Marshal(body)
+	body, err := json.Marshal(payload)
 	if err != nil {
 		return err
 	}

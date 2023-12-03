@@ -2,7 +2,7 @@ package shared
 
 import (
 	"context"
-	"github.com/NubeIO/rubix-os/module/proto"
+	"github.com/NubeIO/lib-module-go/proto"
 	"github.com/hashicorp/go-plugin"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"

@@ -3,11 +3,11 @@ package pollqueue
 import (
 	"container/heap"
 	"fmt"
-	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
-	argspkg "github.com/NubeIO/rubix-os/args"
-	"github.com/NubeIO/rubix-os/module/shared"
-	"github.com/NubeIO/rubix-os/utils/boolean"
-	"github.com/NubeIO/rubix-os/utils/float"
+	"github.com/NubeIO/lib-module-go/shared"
+	"github.com/NubeIO/lib-utils-go/boolean"
+	"github.com/NubeIO/lib-utils-go/float"
+	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
+	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 	"time"
 )
 
@@ -127,7 +127,7 @@ func (pm *NetworkPollManager) EmptyQueue() {
 }
 
 func (pm *NetworkPollManager) ReAddDevicePoints(devUUID string) { // This is triggered by a user who wants to update the device poll times for standby points
-	var arg argspkg.Args
+	var arg nargs.Args
 	arg.WithPoints = true
 	dev, err := pm.Marshaller.GetDevice(devUUID, arg)
 	if dev == nil || err != nil {
@@ -177,7 +177,7 @@ func NewPollManager(conf *Config, marshaller shared.Marshaller, ffNetworkUUID, f
 }
 
 func (pm *NetworkPollManager) GetPollRateDuration(rate model.PollRate, deviceUUID string) time.Duration {
-	var arg argspkg.Args
+	var arg nargs.Args
 	var duration time.Duration
 
 	if pm.Marshaller != nil {
@@ -246,7 +246,7 @@ func (pm *NetworkPollManager) PollingFinished(pp *PollingPoint, pollStartTime ti
 func (pm *NetworkPollManager) PollQueueErrorChecking() {
 	pm.pollQueueDebugMsg("NetworkPollManager.PollQueueErrorChecking")
 
-	net, err := pm.Marshaller.GetNetwork(pm.FFNetworkUUID, argspkg.Args{WithDevices: true, WithPoints: true}) // api.Args{WithDevices: true, WithPoints: true}
+	net, err := pm.Marshaller.GetNetwork(pm.FFNetworkUUID, nargs.Args{WithDevices: true, WithPoints: true}) // api.Args{WithDevices: true, WithPoints: true}
 	if net == nil || err != nil {
 		pm.pollQueueErrorMsg("NetworkPollManager.PollQueueErrorChecking: Network Not Found")
 		return

@@ -4,7 +4,7 @@
 syntax = "proto3";
 package proto;
 
-option go_package = "github.com/NubeIO/rubix-os/module/proto";
+option go_package = "github.com/NubeIO/lib-module-go/proto";
 
 message InitRequest {
   uint32 add_server = 1;
