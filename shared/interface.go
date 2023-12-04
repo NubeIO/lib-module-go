@@ -2,6 +2,7 @@ package shared
 
 import (
 	"context"
+	"github.com/NubeIO/lib-module-go/http"
 	"github.com/NubeIO/lib-module-go/proto"
 	"github.com/hashicorp/go-plugin"
 	"google.golang.org/grpc"
@@ -14,11 +15,7 @@ var HandshakeConfig = plugin.HandshakeConfig{
 }
 
 type DBHelper interface {
-	Get(path, args string, body []byte) ([]byte, error)
-	Post(path, args string, body []byte) ([]byte, error)
-	Put(path, args string, body []byte) ([]byte, error)
-	Patch(path, args string, body []byte) ([]byte, error)
-	Delete(path, args string, body []byte) ([]byte, error)
+	Call(method http.Method, api, args string, body []byte) ([]byte, error)
 	PatchWithOpts(path, uuid string, body []byte, opts []byte) ([]byte, error)
 	SetErrorsForAll(path, uuid, message, messageLevel, messageCode string, doPoints bool) error
 	ClearErrorsForAll(path, uuid string, doPoints bool) error
@@ -43,11 +40,7 @@ type Module interface {
 	Enable() error
 	Disable() error
 	GetInfo() (*Info, error)
-	Get(path, args string, body []byte) ([]byte, error)
-	Post(path, args string, body []byte) ([]byte, error)
-	Put(path, args string, body []byte) ([]byte, error)
-	Patch(path, args string, body []byte) ([]byte, error)
-	Delete(path, args string, body []byte) ([]byte, error)
+	Call(method, api, args string, body []byte) ([]byte, error)
 }
 
 // NubeModule is the implementation of plugin.Plugin so we can serve/consume this.

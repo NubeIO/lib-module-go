@@ -3,6 +3,7 @@ package shared
 import (
 	"context"
 	"errors"
+	"github.com/NubeIO/lib-module-go/http"
 	"github.com/NubeIO/lib-module-go/proto"
 	"github.com/hashicorp/go-plugin"
 	log "github.com/sirupsen/logrus"
@@ -76,45 +77,9 @@ func (m *GRPCServer) GetInfo(ctx context.Context, req *proto.Empty) (*proto.Info
 	}, nil
 }
 
-func (m *GRPCServer) Get(ctx context.Context, req *proto.Request) (*proto.Response, error) {
-	log.Debug("gRPC Get server has been called...")
-	r, err := m.Impl.Get(req.Path, req.Args, req.Body)
-	if err != nil {
-		return nil, err
-	}
-	return &proto.Response{R: r}, nil
-}
-
-func (m *GRPCServer) Post(ctx context.Context, req *proto.Request) (*proto.Response, error) {
-	log.Debug("gRPC Post server has been called...")
-	r, err := m.Impl.Post(req.Path, req.Args, req.Body)
-	if err != nil {
-		return nil, err
-	}
-	return &proto.Response{R: r}, nil
-}
-
-func (m *GRPCServer) Put(ctx context.Context, req *proto.Request) (*proto.Response, error) {
-	log.Debug("gRPC Put server has been called...")
-	r, err := m.Impl.Put(req.Path, req.Args, req.Body)
-	if err != nil {
-		return nil, err
-	}
-	return &proto.Response{R: r}, nil
-}
-
-func (m *GRPCServer) Patch(ctx context.Context, req *proto.Request) (*proto.Response, error) {
-	log.Debug("gRPC Patch server has been called...")
-	r, err := m.Impl.Patch(req.Path, req.Args, req.Body)
-	if err != nil {
-		return nil, err
-	}
-	return &proto.Response{R: r}, nil
-}
-
-func (m *GRPCServer) Delete(ctx context.Context, req *proto.Request) (*proto.Response, error) {
-	log.Debug("gRPC Delete server has been called...")
-	r, err := m.Impl.Delete(req.Path, req.Args, req.Body)
+func (m *GRPCServer) Call(ctx context.Context, req *proto.Request) (*proto.Response, error) {
+	log.Debug("gRPC Call server has been called...")
+	r, err := m.Impl.Call(req.Method, req.Api, req.Args, req.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -124,75 +89,12 @@ func (m *GRPCServer) Delete(ctx context.Context, req *proto.Request) (*proto.Res
 // GRPCDBHelperClient is an implementation of DBHelper that talks over RPC.
 type GRPCDBHelperClient struct{ client proto.DBHelperClient }
 
-func (m *GRPCDBHelperClient) Get(path, args string, body []byte) ([]byte, error) {
-	resp, err := m.client.Get(context.Background(), &proto.Request{
-		Path: path,
-		Args: args,
-		Body: body,
-	})
-	if err != nil {
-		return nil, err
-	}
-	if resp.E != nil {
-		errStr := string(resp.E)
-		return nil, errors.New(errStr)
-	}
-	return resp.R, nil
-}
-
-func (m *GRPCDBHelperClient) Post(path, args string, body []byte) ([]byte, error) {
-	resp, err := m.client.Post(context.Background(), &proto.Request{
-		Path: path,
-		Args: args,
-		Body: body,
-	})
-	if err != nil {
-		return nil, err
-	}
-	if resp.E != nil {
-		errStr := string(resp.E)
-		return nil, errors.New(errStr)
-	}
-	return resp.R, nil
-}
-
-func (m *GRPCDBHelperClient) Put(path, args string, body []byte) ([]byte, error) {
-	resp, err := m.client.Put(context.Background(), &proto.Request{
-		Path: path,
-		Args: args,
-		Body: body,
-	})
-	if err != nil {
-		return nil, err
-	}
-	if resp.E != nil {
-		errStr := string(resp.E)
-		return nil, errors.New(errStr)
-	}
-	return resp.R, nil
-}
-
-func (m *GRPCDBHelperClient) Patch(path, args string, body []byte) ([]byte, error) {
-	resp, err := m.client.Patch(context.Background(), &proto.Request{
-		Path: path,
-		Args: args,
-		Body: body,
-	})
-	if err != nil {
-		return nil, err
-	}
-	if resp.E != nil {
-		errStr := string(resp.E)
-		return nil, errors.New(errStr)
-	}
-	return resp.R, nil
-}
-
-func (m *GRPCDBHelperClient) Delete(path, args string, body []byte) ([]byte, error) {
-	resp, err := m.client.Delete(context.Background(), &proto.Request{
-		Path: path,
-		Args: args,
-		Body: body,
+func (m *GRPCDBHelperClient) Call(method http.Method, api, args string, body []byte) ([]byte, error) {
+	resp, err := m.client.Call(context.Background(), &proto.Request{
+		Method: string(method),
+		Api:    api,
+		Args:   args,
+		Body:   body,
 	})
 	if err != nil {
 		return nil, err
