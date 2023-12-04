@@ -2,6 +2,7 @@ package router
 
 import (
 	"fmt"
+	"github.com/NubeIO/lib-module-go/http"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 	"strings"
 )
@@ -11,29 +12,33 @@ type HandlerFunc func(map[string]string, nargs.Args, []byte) ([]byte, error)
 
 // Router is a simple router that maps URL patterns to handlers
 type Router struct {
-	routes map[string]HandlerFunc
+	routes map[string]map[http.Method]HandlerFunc
 }
 
 // NewRouter creates a new Router instance
 func NewRouter() *Router {
 	return &Router{
-		routes: make(map[string]HandlerFunc),
+		routes: make(map[string]map[http.Method]HandlerFunc),
 	}
 }
 
-// Handle registers a handler for a specific pattern
-func (router *Router) Handle(pattern string, handler HandlerFunc) {
-	router.routes[pattern] = handler
+// Handle registers a handler for a specific pattern and HTTP method
+func (router *Router) Handle(method http.Method, pattern string, handler HandlerFunc) {
+	if _, exists := router.routes[pattern]; !exists {
+		router.routes[pattern] = make(map[http.Method]HandlerFunc)
+	}
+	router.routes[pattern][method] = handler
 }
 
-// CallHandler calls the registered handler for the given pattern
-func (router *Router) CallHandler(path string, args nargs.Args, body []byte) ([]byte, error) {
-	for pattern, handler := range router.routes {
+func (router *Router) CallHandler(method http.Method, path string, args nargs.Args, body []byte) ([]byte, error) {
+	for pattern, handlers := range router.routes {
 		if params, ok := match(pattern, path); ok {
-			return handler(params, args, body)
+			if handler, exists := handlers[method]; exists {
+				return handler(params, args, body)
+			}
 		}
 	}
-	return nil, fmt.Errorf("handler not found for path: %s", path)
+	return nil, fmt.Errorf("handler not found for path: %s and method: %s", path, method)
 }
 
 // match checks if the given pattern matches the request path and extracts parameters
