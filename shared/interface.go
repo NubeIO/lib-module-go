@@ -52,7 +52,7 @@ type Module interface {
 	Delete(path, uuid string) ([]byte, error)
 }
 
-// This is the implementation of plugin.Plugin so we can serve/consume this.
+// NubeModule is the implementation of plugin.Plugin so we can serve/consume this.
 type NubeModule struct {
 	plugin.NetRPCUnsupportedPlugin
 	// Concrete implementation, written in Go. This is only used for plugins
