@@ -14,14 +14,12 @@ var HandshakeConfig = plugin.HandshakeConfig{
 }
 
 type DBHelper interface {
-	GetWithoutParam(path, args string) ([]byte, error)
-	Get(path, uuid, args string) ([]byte, error)
-	Post(path string, body []byte) ([]byte, error)
-	Put(path, uuid string, body []byte) ([]byte, error)
-	PatchWithoutParam(path string, body []byte) ([]byte, error)
-	Patch(path, uuid string, body []byte) ([]byte, error)
+	Get(path, args string, body []byte) ([]byte, error)
+	Post(path, args string, body []byte) ([]byte, error)
+	Put(path, args string, body []byte) ([]byte, error)
+	Patch(path, args string, body []byte) ([]byte, error)
+	Delete(path, args string, body []byte) ([]byte, error)
 	PatchWithOpts(path, uuid string, body []byte, opts []byte) ([]byte, error)
-	Delete(path, uuid string) ([]byte, error)
 	SetErrorsForAll(path, uuid, message, messageLevel, messageCode string, doPoints bool) error
 	ClearErrorsForAll(path, uuid string, doPoints bool) error
 	WizardNewNetworkDevicePoint(plugin string, network, device, point []byte) (bool, error)
@@ -45,11 +43,11 @@ type Module interface {
 	Enable() error
 	Disable() error
 	GetInfo() (*Info, error)
-	Get(path string) ([]byte, error)
-	Post(path string, body []byte) ([]byte, error)
-	Put(path, uuid string, body []byte) ([]byte, error)
-	Patch(path, uuid string, body []byte) ([]byte, error)
-	Delete(path, uuid string) ([]byte, error)
+	Get(path, args string, body []byte) ([]byte, error)
+	Post(path, args string, body []byte) ([]byte, error)
+	Put(path, args string, body []byte) ([]byte, error)
+	Patch(path, args string, body []byte) ([]byte, error)
+	Delete(path, args string, body []byte) ([]byte, error)
 }
 
 // NubeModule is the implementation of plugin.Plugin so we can serve/consume this.

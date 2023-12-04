@@ -72,10 +72,12 @@ func (m *GRPCClient) GetInfo() (*Info, error) {
 	}, nil
 }
 
-func (m *GRPCClient) Get(path string) ([]byte, error) {
+func (m *GRPCClient) Get(path, args string, body []byte) ([]byte, error) {
 	log.Debug("gRPC Get client has been called...")
-	resp, err := m.client.Get(context.Background(), &proto.GetRequest{
+	resp, err := m.client.Get(context.Background(), &proto.Request{
 		Path: path,
+		Args: args,
+		Body: body,
 	})
 	if err != nil {
 		return nil, err
@@ -83,10 +85,11 @@ func (m *GRPCClient) Get(path string) ([]byte, error) {
 	return resp.R, nil
 }
 
-func (m *GRPCClient) Post(path string, body []byte) ([]byte, error) {
+func (m *GRPCClient) Post(path, args string, body []byte) ([]byte, error) {
 	log.Debug("gRPC Post client has been called...")
-	resp, err := m.client.Post(context.Background(), &proto.PostRequest{
+	resp, err := m.client.Post(context.Background(), &proto.Request{
 		Path: path,
+		Args: args,
 		Body: body,
 	})
 	if err != nil {
@@ -95,11 +98,11 @@ func (m *GRPCClient) Post(path string, body []byte) ([]byte, error) {
 	return resp.R, nil
 }
 
-func (m *GRPCClient) Put(path, uuid string, body []byte) ([]byte, error) {
+func (m *GRPCClient) Put(path, args string, body []byte) ([]byte, error) {
 	log.Debugf("gRPC Put client has been called...")
-	resp, err := m.client.Put(context.Background(), &proto.PutRequest{
+	resp, err := m.client.Put(context.Background(), &proto.Request{
 		Path: path,
-		Uuid: uuid,
+		Args: args,
 		Body: body,
 	})
 	if err != nil {
@@ -108,11 +111,11 @@ func (m *GRPCClient) Put(path, uuid string, body []byte) ([]byte, error) {
 	return resp.R, nil
 }
 
-func (m *GRPCClient) Patch(path, uuid string, body []byte) ([]byte, error) {
+func (m *GRPCClient) Patch(path, args string, body []byte) ([]byte, error) {
 	log.Debug("gRPC Patch client has been called...")
-	resp, err := m.client.Patch(context.Background(), &proto.PatchRequest{
+	resp, err := m.client.Patch(context.Background(), &proto.Request{
 		Path: path,
-		Uuid: uuid,
+		Args: args,
 		Body: body,
 	})
 	if err != nil {
@@ -121,11 +124,12 @@ func (m *GRPCClient) Patch(path, uuid string, body []byte) ([]byte, error) {
 	return resp.R, nil
 }
 
-func (m *GRPCClient) Delete(path, uuid string) ([]byte, error) {
+func (m *GRPCClient) Delete(path, args string, body []byte) ([]byte, error) {
 	log.Debug("gRPC Delete client has been called...")
-	resp, err := m.client.Delete(context.Background(), &proto.DeleteRequest{
+	resp, err := m.client.Delete(context.Background(), &proto.Request{
 		Path: path,
-		Uuid: uuid,
+		Args: args,
+		Body: body,
 	})
 	if err != nil {
 		return nil, err
@@ -139,40 +143,40 @@ type GRPCDBHelperServer struct {
 	Impl DBHelper
 }
 
-func (m *GRPCDBHelperServer) GetWithoutParam(ctx context.Context, req *proto.GetWithoutParamRequest) (resp *proto.Response, err error) {
-	r, err := m.Impl.GetWithoutParam(req.Path, req.Args)
+func (m *GRPCDBHelperServer) Get(ctx context.Context, req *proto.Request) (resp *proto.Response, err error) {
+	r, err := m.Impl.Get(req.Path, req.Args, req.Body)
 	if err != nil {
 		return &proto.Response{R: nil, E: []byte(err.Error())}, nil
 	}
 	return &proto.Response{R: r, E: nil}, nil
 }
 
-func (m *GRPCDBHelperServer) Get(ctx context.Context, req *proto.GetRequest) (resp *proto.Response, err error) {
-	r, err := m.Impl.Get(req.Path, req.Uuid, req.Args)
+func (m *GRPCDBHelperServer) Post(ctx context.Context, req *proto.Request) (resp *proto.Response, err error) {
+	r, err := m.Impl.Post(req.Path, req.Args, req.Body)
 	if err != nil {
 		return &proto.Response{R: nil, E: []byte(err.Error())}, nil
 	}
 	return &proto.Response{R: r, E: nil}, nil
 }
 
-func (m *GRPCDBHelperServer) Post(ctx context.Context, req *proto.PostRequest) (resp *proto.Response, err error) {
-	r, err := m.Impl.Post(req.Path, req.Body)
+func (m *GRPCDBHelperServer) Put(ctx context.Context, req *proto.Request) (resp *proto.Response, err error) {
+	r, err := m.Impl.Put(req.Path, req.Args, req.Body)
 	if err != nil {
 		return &proto.Response{R: nil, E: []byte(err.Error())}, nil
 	}
 	return &proto.Response{R: r, E: nil}, nil
 }
 
-func (m *GRPCDBHelperServer) Put(ctx context.Context, req *proto.PutRequest) (resp *proto.Response, err error) {
-	r, err := m.Impl.Put(req.Path, req.Uuid, req.Body)
+func (m *GRPCDBHelperServer) Patch(ctx context.Context, req *proto.Request) (resp *proto.Response, err error) {
+	r, err := m.Impl.Patch(req.Path, req.Args, req.Body)
 	if err != nil {
 		return &proto.Response{R: nil, E: []byte(err.Error())}, nil
 	}
 	return &proto.Response{R: r, E: nil}, nil
 }
 
-func (m *GRPCDBHelperServer) PatchWithoutParam(ctx context.Context, req *proto.PatchWithoutParamRequest) (*proto.Response, error) {
-	r, err := m.Impl.PatchWithoutParam(req.Path, req.Body)
+func (m *GRPCDBHelperServer) Delete(ctx context.Context, req *proto.Request) (resp *proto.Response, err error) {
+	r, err := m.Impl.Delete(req.Path, req.Args, req.Body)
 	if err != nil {
 		return &proto.Response{R: nil, E: []byte(err.Error())}, nil
 	}
@@ -181,22 +185,6 @@ func (m *GRPCDBHelperServer) PatchWithoutParam(ctx context.Context, req *proto.P
 
 func (m *GRPCDBHelperServer) PatchWithOpts(ctx context.Context, req *proto.PatchWithOptsRequest) (*proto.Response, error) {
 	r, err := m.Impl.PatchWithOpts(req.Path, req.Uuid, req.Body, req.Opts)
-	if err != nil {
-		return &proto.Response{R: nil, E: []byte(err.Error())}, nil
-	}
-	return &proto.Response{R: r, E: nil}, nil
-}
-
-func (m *GRPCDBHelperServer) Patch(ctx context.Context, req *proto.PatchRequest) (resp *proto.Response, err error) {
-	r, err := m.Impl.Patch(req.Path, req.Uuid, req.Body)
-	if err != nil {
-		return &proto.Response{R: nil, E: []byte(err.Error())}, nil
-	}
-	return &proto.Response{R: r, E: nil}, nil
-}
-
-func (m *GRPCDBHelperServer) Delete(ctx context.Context, req *proto.DeleteRequest) (resp *proto.Response, err error) {
-	r, err := m.Impl.Delete(req.Path, req.Uuid)
 	if err != nil {
 		return &proto.Response{R: nil, E: []byte(err.Error())}, nil
 	}
