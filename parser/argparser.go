@@ -3,13 +3,13 @@ package parser
 import "encoding/json"
 import "github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 
-func SerializeArgs(args nargs.Args) (string, error) {
+func SerializeArgs(args nargs.Args) (*string, error) {
 	argsData, err := json.Marshal(args)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	argsString := string(argsData)
-	return argsString, nil
+	return &argsString, nil
 }
 
 func DeserializeArgs(args string) (*nargs.Args, error) {

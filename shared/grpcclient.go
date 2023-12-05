@@ -3,7 +3,9 @@ package shared
 import (
 	"context"
 	"github.com/NubeIO/lib-module-go/http"
+	"github.com/NubeIO/lib-module-go/parser"
 	"github.com/NubeIO/lib-module-go/proto"
+	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 	"github.com/hashicorp/go-plugin"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -73,12 +75,13 @@ func (m *GRPCClient) GetInfo() (*Info, error) {
 	}, nil
 }
 
-func (m *GRPCClient) Call(method, api, args string, body []byte) ([]byte, error) {
+func (m *GRPCClient) Call(method http.Method, api string, args nargs.Args, body []byte) ([]byte, error) {
 	log.Debug("gRPC Call client has been called...")
+	apiArgs, _ := parser.SerializeArgs(args)
 	resp, err := m.client.Call(context.Background(), &proto.Request{
-		Method: method,
+		Method: string(method),
 		Api:    api,
-		Args:   args,
+		Args:   *apiArgs,
 		Body:   body,
 	})
 	if err != nil {
@@ -95,72 +98,10 @@ type GRPCDBHelperServer struct {
 
 func (m *GRPCDBHelperServer) Call(ctx context.Context, req *proto.Request) (resp *proto.Response, err error) {
 	method, _ := http.StringToMethod(req.Method)
-	r, err := m.Impl.Call(method, req.Api, req.Args, req.Body)
+	apiArgs, _ := parser.DeserializeArgs(req.Args)
+	r, err := m.Impl.Call(method, req.Api, *apiArgs, req.Body)
 	if err != nil {
 		return &proto.Response{R: nil, E: []byte(err.Error())}, nil
 	}
 	return &proto.Response{R: r, E: nil}, nil
-}
-
-func (m *GRPCDBHelperServer) PatchWithOpts(ctx context.Context, req *proto.PatchWithOptsRequest) (*proto.Response, error) {
-	r, err := m.Impl.PatchWithOpts(req.Path, req.Uuid, req.Body, req.Opts)
-	if err != nil {
-		return &proto.Response{R: nil, E: []byte(err.Error())}, nil
-	}
-	return &proto.Response{R: r, E: nil}, nil
-}
-
-func (m *GRPCDBHelperServer) SetErrorsForAll(ctx context.Context, request *proto.SetErrorsForAllRequest) (*proto.ErrorResponse, error) {
-	err := m.Impl.SetErrorsForAll(
-		request.Path,
-		request.Uuid,
-		request.Message,
-		request.MessageLevel,
-		request.MessageCode,
-		request.DoPoints,
-	)
-	if err != nil {
-		return &proto.ErrorResponse{E: []byte(err.Error())}, nil
-	}
-	return &proto.ErrorResponse{E: nil}, nil
-}
-
-func (m *GRPCDBHelperServer) ClearErrorsForAll(ctx context.Context, request *proto.ClearErrorsForAllRequest) (*proto.ErrorResponse, error) {
-	err := m.Impl.ClearErrorsForAll(request.Path, request.Uuid, request.DoPoints)
-	if err != nil {
-		return &proto.ErrorResponse{E: []byte(err.Error())}, nil
-	}
-	return &proto.ErrorResponse{E: nil}, nil
-}
-
-func (m *GRPCDBHelperServer) WizardNewNetworkDevicePoint(ctx context.Context, request *proto.WizardNewNetworkDevicePointRequest) (*proto.BoolResponse, error) {
-	_, err := m.Impl.WizardNewNetworkDevicePoint(request.Plugin, request.Network, request.Device, request.Point)
-	if err != nil {
-		return &proto.BoolResponse{R: false, E: []byte(err.Error())}, nil
-	}
-	return &proto.BoolResponse{R: true, E: nil}, nil
-}
-
-func (m *GRPCDBHelperServer) CreateModuleDataDir(ctx context.Context, request *proto.DataDirRequest) (*proto.DataDirResponse, error) {
-	r, err := m.Impl.CreateModuleDataDir(request.Name)
-	if err != nil {
-		return &proto.DataDirResponse{Dir: "", E: []byte(err.Error())}, nil
-	}
-	return &proto.DataDirResponse{Dir: r, E: nil}, nil
-}
-
-func (m *GRPCDBHelperServer) MQTTPublish(ctx context.Context, request *proto.MQTTPublishRequest) (*proto.ErrorResponse, error) {
-	err := m.Impl.MQTTPublish(request.Topic, request.Qos, request.Retain, request.Body)
-	if err != nil {
-		return &proto.ErrorResponse{E: []byte(err.Error())}, nil
-	}
-	return &proto.ErrorResponse{E: nil}, nil
-}
-
-func (m *GRPCDBHelperServer) MQTTPublishNonBuffer(ctx context.Context, request *proto.MQTTPublishNonBufferRequest) (*proto.ErrorResponse, error) {
-	err := m.Impl.MQTTPublishNonBuffer(request.Topic, request.Qos, request.Retain, request.Body)
-	if err != nil {
-		return &proto.ErrorResponse{E: []byte(err.Error())}, nil
-	}
-	return &proto.ErrorResponse{E: nil}, nil
 }

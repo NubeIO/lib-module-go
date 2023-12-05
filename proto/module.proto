@@ -118,11 +118,4 @@ service Module {
 
 service DBHelper {
   rpc Call(Request) returns (Response);
-  rpc PatchWithOpts(PatchWithOptsRequest) returns (Response);
-  rpc SetErrorsForAll(SetErrorsForAllRequest) returns (ErrorResponse);
-  rpc ClearErrorsForAll(ClearErrorsForAllRequest) returns (ErrorResponse);
-  rpc WizardNewNetworkDevicePoint(WizardNewNetworkDevicePointRequest) returns (BoolResponse);
-  rpc CreateModuleDataDir(DataDirRequest) returns (DataDirResponse);
-  rpc MQTTPublish(MQTTPublishRequest) returns (ErrorResponse);
-  rpc MQTTPublishNonBuffer(MQTTPublishNonBufferRequest) returns (ErrorResponse);
 }

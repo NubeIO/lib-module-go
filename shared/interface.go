@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/NubeIO/lib-module-go/http"
 	"github.com/NubeIO/lib-module-go/proto"
+	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 	"github.com/hashicorp/go-plugin"
 	"google.golang.org/grpc"
 )
@@ -15,14 +16,7 @@ var HandshakeConfig = plugin.HandshakeConfig{
 }
 
 type DBHelper interface {
-	Call(method http.Method, api, args string, body []byte) ([]byte, error)
-	PatchWithOpts(path, uuid string, body []byte, opts []byte) ([]byte, error)
-	SetErrorsForAll(path, uuid, message, messageLevel, messageCode string, doPoints bool) error
-	ClearErrorsForAll(path, uuid string, doPoints bool) error
-	WizardNewNetworkDevicePoint(plugin string, network, device, point []byte) (bool, error)
-	CreateModuleDataDir(name string) (string, error)
-	MQTTPublish(topic string, qos []byte, retain bool, body string) error
-	MQTTPublishNonBuffer(topic string, qos []byte, retain bool, body []byte) error
+	Call(method http.Method, api string, args nargs.Args, body []byte) ([]byte, error)
 }
 
 type Info struct {
@@ -40,7 +34,7 @@ type Module interface {
 	Enable() error
 	Disable() error
 	GetInfo() (*Info, error)
-	Call(method, api, args string, body []byte) ([]byte, error)
+	Call(method http.Method, api string, args nargs.Args, body []byte) ([]byte, error)
 }
 
 // NubeModule is the implementation of plugin.Plugin so we can serve/consume this.

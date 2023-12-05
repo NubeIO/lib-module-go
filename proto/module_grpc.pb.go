@@ -295,14 +295,7 @@ var Module_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	DBHelper_Call_FullMethodName                        = "/proto.DBHelper/Call"
-	DBHelper_PatchWithOpts_FullMethodName               = "/proto.DBHelper/PatchWithOpts"
-	DBHelper_SetErrorsForAll_FullMethodName             = "/proto.DBHelper/SetErrorsForAll"
-	DBHelper_ClearErrorsForAll_FullMethodName           = "/proto.DBHelper/ClearErrorsForAll"
-	DBHelper_WizardNewNetworkDevicePoint_FullMethodName = "/proto.DBHelper/WizardNewNetworkDevicePoint"
-	DBHelper_CreateModuleDataDir_FullMethodName         = "/proto.DBHelper/CreateModuleDataDir"
-	DBHelper_MQTTPublish_FullMethodName                 = "/proto.DBHelper/MQTTPublish"
-	DBHelper_MQTTPublishNonBuffer_FullMethodName        = "/proto.DBHelper/MQTTPublishNonBuffer"
+	DBHelper_Call_FullMethodName = "/proto.DBHelper/Call"
 )
 
 // DBHelperClient is the client API for DBHelper service.
@@ -310,13 +303,6 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DBHelperClient interface {
 	Call(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
-	PatchWithOpts(ctx context.Context, in *PatchWithOptsRequest, opts ...grpc.CallOption) (*Response, error)
-	SetErrorsForAll(ctx context.Context, in *SetErrorsForAllRequest, opts ...grpc.CallOption) (*ErrorResponse, error)
-	ClearErrorsForAll(ctx context.Context, in *ClearErrorsForAllRequest, opts ...grpc.CallOption) (*ErrorResponse, error)
-	WizardNewNetworkDevicePoint(ctx context.Context, in *WizardNewNetworkDevicePointRequest, opts ...grpc.CallOption) (*BoolResponse, error)
-	CreateModuleDataDir(ctx context.Context, in *DataDirRequest, opts ...grpc.CallOption) (*DataDirResponse, error)
-	MQTTPublish(ctx context.Context, in *MQTTPublishRequest, opts ...grpc.CallOption) (*ErrorResponse, error)
-	MQTTPublishNonBuffer(ctx context.Context, in *MQTTPublishNonBufferRequest, opts ...grpc.CallOption) (*ErrorResponse, error)
 }
 
 type dBHelperClient struct {
@@ -336,81 +322,11 @@ func (c *dBHelperClient) Call(ctx context.Context, in *Request, opts ...grpc.Cal
 	return out, nil
 }
 
-func (c *dBHelperClient) PatchWithOpts(ctx context.Context, in *PatchWithOptsRequest, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, DBHelper_PatchWithOpts_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dBHelperClient) SetErrorsForAll(ctx context.Context, in *SetErrorsForAllRequest, opts ...grpc.CallOption) (*ErrorResponse, error) {
-	out := new(ErrorResponse)
-	err := c.cc.Invoke(ctx, DBHelper_SetErrorsForAll_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dBHelperClient) ClearErrorsForAll(ctx context.Context, in *ClearErrorsForAllRequest, opts ...grpc.CallOption) (*ErrorResponse, error) {
-	out := new(ErrorResponse)
-	err := c.cc.Invoke(ctx, DBHelper_ClearErrorsForAll_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dBHelperClient) WizardNewNetworkDevicePoint(ctx context.Context, in *WizardNewNetworkDevicePointRequest, opts ...grpc.CallOption) (*BoolResponse, error) {
-	out := new(BoolResponse)
-	err := c.cc.Invoke(ctx, DBHelper_WizardNewNetworkDevicePoint_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dBHelperClient) CreateModuleDataDir(ctx context.Context, in *DataDirRequest, opts ...grpc.CallOption) (*DataDirResponse, error) {
-	out := new(DataDirResponse)
-	err := c.cc.Invoke(ctx, DBHelper_CreateModuleDataDir_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dBHelperClient) MQTTPublish(ctx context.Context, in *MQTTPublishRequest, opts ...grpc.CallOption) (*ErrorResponse, error) {
-	out := new(ErrorResponse)
-	err := c.cc.Invoke(ctx, DBHelper_MQTTPublish_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dBHelperClient) MQTTPublishNonBuffer(ctx context.Context, in *MQTTPublishNonBufferRequest, opts ...grpc.CallOption) (*ErrorResponse, error) {
-	out := new(ErrorResponse)
-	err := c.cc.Invoke(ctx, DBHelper_MQTTPublishNonBuffer_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // DBHelperServer is the server API for DBHelper service.
 // All implementations should embed UnimplementedDBHelperServer
 // for forward compatibility
 type DBHelperServer interface {
 	Call(context.Context, *Request) (*Response, error)
-	PatchWithOpts(context.Context, *PatchWithOptsRequest) (*Response, error)
-	SetErrorsForAll(context.Context, *SetErrorsForAllRequest) (*ErrorResponse, error)
-	ClearErrorsForAll(context.Context, *ClearErrorsForAllRequest) (*ErrorResponse, error)
-	WizardNewNetworkDevicePoint(context.Context, *WizardNewNetworkDevicePointRequest) (*BoolResponse, error)
-	CreateModuleDataDir(context.Context, *DataDirRequest) (*DataDirResponse, error)
-	MQTTPublish(context.Context, *MQTTPublishRequest) (*ErrorResponse, error)
-	MQTTPublishNonBuffer(context.Context, *MQTTPublishNonBufferRequest) (*ErrorResponse, error)
 }
 
 // UnimplementedDBHelperServer should be embedded to have forward compatible implementations.
@@ -419,27 +335,6 @@ type UnimplementedDBHelperServer struct {
 
 func (UnimplementedDBHelperServer) Call(context.Context, *Request) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Call not implemented")
-}
-func (UnimplementedDBHelperServer) PatchWithOpts(context.Context, *PatchWithOptsRequest) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PatchWithOpts not implemented")
-}
-func (UnimplementedDBHelperServer) SetErrorsForAll(context.Context, *SetErrorsForAllRequest) (*ErrorResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetErrorsForAll not implemented")
-}
-func (UnimplementedDBHelperServer) ClearErrorsForAll(context.Context, *ClearErrorsForAllRequest) (*ErrorResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ClearErrorsForAll not implemented")
-}
-func (UnimplementedDBHelperServer) WizardNewNetworkDevicePoint(context.Context, *WizardNewNetworkDevicePointRequest) (*BoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WizardNewNetworkDevicePoint not implemented")
-}
-func (UnimplementedDBHelperServer) CreateModuleDataDir(context.Context, *DataDirRequest) (*DataDirResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateModuleDataDir not implemented")
-}
-func (UnimplementedDBHelperServer) MQTTPublish(context.Context, *MQTTPublishRequest) (*ErrorResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method MQTTPublish not implemented")
-}
-func (UnimplementedDBHelperServer) MQTTPublishNonBuffer(context.Context, *MQTTPublishNonBufferRequest) (*ErrorResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method MQTTPublishNonBuffer not implemented")
 }
 
 // UnsafeDBHelperServer may be embedded to opt out of forward compatibility for this service.
@@ -471,132 +366,6 @@ func _DBHelper_Call_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DBHelper_PatchWithOpts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PatchWithOptsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBHelperServer).PatchWithOpts(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBHelper_PatchWithOpts_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBHelperServer).PatchWithOpts(ctx, req.(*PatchWithOptsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DBHelper_SetErrorsForAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetErrorsForAllRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBHelperServer).SetErrorsForAll(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBHelper_SetErrorsForAll_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBHelperServer).SetErrorsForAll(ctx, req.(*SetErrorsForAllRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DBHelper_ClearErrorsForAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ClearErrorsForAllRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBHelperServer).ClearErrorsForAll(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBHelper_ClearErrorsForAll_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBHelperServer).ClearErrorsForAll(ctx, req.(*ClearErrorsForAllRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DBHelper_WizardNewNetworkDevicePoint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WizardNewNetworkDevicePointRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBHelperServer).WizardNewNetworkDevicePoint(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBHelper_WizardNewNetworkDevicePoint_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBHelperServer).WizardNewNetworkDevicePoint(ctx, req.(*WizardNewNetworkDevicePointRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DBHelper_CreateModuleDataDir_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DataDirRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBHelperServer).CreateModuleDataDir(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBHelper_CreateModuleDataDir_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBHelperServer).CreateModuleDataDir(ctx, req.(*DataDirRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DBHelper_MQTTPublish_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MQTTPublishRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBHelperServer).MQTTPublish(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBHelper_MQTTPublish_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBHelperServer).MQTTPublish(ctx, req.(*MQTTPublishRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DBHelper_MQTTPublishNonBuffer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MQTTPublishNonBufferRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBHelperServer).MQTTPublishNonBuffer(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DBHelper_MQTTPublishNonBuffer_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBHelperServer).MQTTPublishNonBuffer(ctx, req.(*MQTTPublishNonBufferRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // DBHelper_ServiceDesc is the grpc.ServiceDesc for DBHelper service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -607,34 +376,6 @@ var DBHelper_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Call",
 			Handler:    _DBHelper_Call_Handler,
-		},
-		{
-			MethodName: "PatchWithOpts",
-			Handler:    _DBHelper_PatchWithOpts_Handler,
-		},
-		{
-			MethodName: "SetErrorsForAll",
-			Handler:    _DBHelper_SetErrorsForAll_Handler,
-		},
-		{
-			MethodName: "ClearErrorsForAll",
-			Handler:    _DBHelper_ClearErrorsForAll_Handler,
-		},
-		{
-			MethodName: "WizardNewNetworkDevicePoint",
-			Handler:    _DBHelper_WizardNewNetworkDevicePoint_Handler,
-		},
-		{
-			MethodName: "CreateModuleDataDir",
-			Handler:    _DBHelper_CreateModuleDataDir_Handler,
-		},
-		{
-			MethodName: "MQTTPublish",
-			Handler:    _DBHelper_MQTTPublish_Handler,
-		},
-		{
-			MethodName: "MQTTPublishNonBuffer",
-			Handler:    _DBHelper_MQTTPublishNonBuffer_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

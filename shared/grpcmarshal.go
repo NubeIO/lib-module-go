@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/NubeIO/lib-module-go/http"
-	"github.com/NubeIO/lib-module-go/parser"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 )
@@ -82,12 +81,8 @@ type GRPCMarshaller struct {
 }
 
 func (g *GRPCMarshaller) GetNetwork(uuid string, args nargs.Args) (*model.Network, error) {
-	serializedArgs, err := parser.SerializeArgs(args)
-	if err != nil {
-		return nil, err
-	}
 	api := fmt.Sprintf("/api/networks/%s", uuid)
-	res, err := g.DbHelper.Call(http.GET, api, serializedArgs, nil)
+	res, err := g.DbHelper.Call(http.GET, api, args, nil)
 	if err != nil {
 		return nil, err
 	}
