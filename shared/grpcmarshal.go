@@ -84,13 +84,28 @@ type Marshaller interface {
 	// PublishNonBuffer(topic string, qos mqttclient.QOS, retain bool, payload interface{}) error
 }
 
+// var dbHelperParser *dbhelper.DBHelperParser
+
+func New(dbHelper DBHelper) *GRPCMarshaller {
+	// dbHelperParser = &dbhelper.DBHelperParser{}
+	return &GRPCMarshaller{DbHelper: dbHelper}
+}
+
 type GRPCMarshaller struct {
 	DbHelper DBHelper
 }
 
+func (g *GRPCMarshaller) CallWithParser(method http.Method, api string, args nargs.Args, body interface{}) ([]byte, error) {
+	b, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	return g.DbHelper.CallDBHelper(method, api, args, b)
+}
+
 func (g *GRPCMarshaller) GetNetworks(args nargs.Args) ([]*model.Network, error) {
 	api := "/api/networks"
-	res, err := g.DbHelper.Call(http.GET, api, args, nil)
+	res, err := g.DbHelper.CallDBHelper(http.GET, api, args, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +119,7 @@ func (g *GRPCMarshaller) GetNetworks(args nargs.Args) ([]*model.Network, error) 
 
 func (g *GRPCMarshaller) GetNetwork(uuid string, args nargs.Args) (*model.Network, error) {
 	api := fmt.Sprintf("/api/networks/%s", uuid)
-	res, err := g.DbHelper.Call(http.GET, api, args, nil)
+	res, err := g.DbHelper.CallDBHelper(http.GET, api, args, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -118,7 +133,7 @@ func (g *GRPCMarshaller) GetNetwork(uuid string, args nargs.Args) (*model.Networ
 
 func (g *GRPCMarshaller) GetNetworkByName(networkName string, args nargs.Args) (*model.Network, error) {
 	api := fmt.Sprintf("/api/networks/name/%s", networkName)
-	res, err := g.DbHelper.Call(http.GET, api, args, nil)
+	res, err := g.DbHelper.CallDBHelper(http.GET, api, args, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -132,7 +147,7 @@ func (g *GRPCMarshaller) GetNetworkByName(networkName string, args nargs.Args) (
 
 func (g *GRPCMarshaller) GetNetworkByPlugin(pluginUUID string, args nargs.Args) (*model.Network, error) {
 	api := fmt.Sprintf("/api/networks/plugin-uuid/%s", pluginUUID)
-	res, err := g.DbHelper.Call(http.GET, api, args, nil)
+	res, err := g.DbHelper.CallDBHelper(http.GET, api, args, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -146,7 +161,7 @@ func (g *GRPCMarshaller) GetNetworkByPlugin(pluginUUID string, args nargs.Args) 
 
 func (g *GRPCMarshaller) GetOneNetworkByArgs(args nargs.Args) (*model.Network, error) {
 	api := "/api/networks/one/args"
-	res, err := g.DbHelper.Call(http.GET, api, args, nil)
+	res, err := g.DbHelper.CallDBHelper(http.GET, api, args, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +175,7 @@ func (g *GRPCMarshaller) GetOneNetworkByArgs(args nargs.Args) (*model.Network, e
 
 func (g *GRPCMarshaller) GetNetworksByPlugin(pluginUUID string, args nargs.Args) ([]*model.Network, error) {
 	api := fmt.Sprintf("/api/networks/plugin-uuid/%s/all", pluginUUID)
-	res, err := g.DbHelper.Call(http.GET, api, args, nil)
+	res, err := g.DbHelper.CallDBHelper(http.GET, api, args, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -174,7 +189,7 @@ func (g *GRPCMarshaller) GetNetworksByPlugin(pluginUUID string, args nargs.Args)
 
 func (g *GRPCMarshaller) GetNetworksByPluginName(pluginName string, args nargs.Args) ([]*model.Network, error) {
 	api := fmt.Sprintf("/api/networks/plugin-name/%s/all", pluginName)
-	res, err := g.DbHelper.Call(http.GET, api, args, nil)
+	res, err := g.DbHelper.CallDBHelper(http.GET, api, args, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -188,7 +203,7 @@ func (g *GRPCMarshaller) GetNetworksByPluginName(pluginName string, args nargs.A
 
 func (g *GRPCMarshaller) GetDevices(args nargs.Args) ([]*model.Device, error) {
 	api := "/api/devices"
-	res, err := g.DbHelper.Call(http.GET, api, args, nil)
+	res, err := g.DbHelper.CallDBHelper(http.GET, api, args, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -202,7 +217,7 @@ func (g *GRPCMarshaller) GetDevices(args nargs.Args) ([]*model.Device, error) {
 
 func (g *GRPCMarshaller) GetDevice(uuid string, args nargs.Args) (*model.Device, error) {
 	api := fmt.Sprintf("/api/devices/%s", uuid)
-	res, err := g.DbHelper.Call(http.GET, api, args, nil)
+	res, err := g.DbHelper.CallDBHelper(http.GET, api, args, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -216,7 +231,7 @@ func (g *GRPCMarshaller) GetDevice(uuid string, args nargs.Args) (*model.Device,
 
 func (g *GRPCMarshaller) GetDeviceByName(networkName, deviceName string, args nargs.Args) (*model.Device, error) {
 	api := fmt.Sprintf("/api/devices/name/%s/%s", networkName, deviceName)
-	res, err := g.DbHelper.Call(http.GET, api, args, nil)
+	res, err := g.DbHelper.CallDBHelper(http.GET, api, args, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -230,7 +245,7 @@ func (g *GRPCMarshaller) GetDeviceByName(networkName, deviceName string, args na
 
 func (g *GRPCMarshaller) GetOneDeviceByArgs(args nargs.Args) (*model.Device, error) {
 	api := "/api/devices/one/args"
-	res, err := g.DbHelper.Call(http.GET, api, args, nil)
+	res, err := g.DbHelper.CallDBHelper(http.GET, api, args, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -244,7 +259,7 @@ func (g *GRPCMarshaller) GetOneDeviceByArgs(args nargs.Args) (*model.Device, err
 
 func (g *GRPCMarshaller) GetPoints(args nargs.Args) ([]*model.Point, error) {
 	api := "/api/points"
-	res, err := g.DbHelper.Call(http.GET, api, args, nil)
+	res, err := g.DbHelper.CallDBHelper(http.GET, api, args, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -258,7 +273,7 @@ func (g *GRPCMarshaller) GetPoints(args nargs.Args) ([]*model.Point, error) {
 
 func (g *GRPCMarshaller) GetPoint(uuid string, args nargs.Args) (*model.Point, error) {
 	api := fmt.Sprintf("/api/points/%s", uuid)
-	res, err := g.DbHelper.Call(http.GET, api, args, nil)
+	res, err := g.DbHelper.CallDBHelper(http.GET, api, args, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -272,7 +287,7 @@ func (g *GRPCMarshaller) GetPoint(uuid string, args nargs.Args) (*model.Point, e
 
 func (g *GRPCMarshaller) GetPointByName(networkName, deviceName, pointName string, args nargs.Args) (*model.Point, error) {
 	api := fmt.Sprintf("/api/points/name/%s/%s/%s", networkName, deviceName, pointName)
-	res, err := g.DbHelper.Call(http.GET, api, args, nil)
+	res, err := g.DbHelper.CallDBHelper(http.GET, api, args, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -286,7 +301,7 @@ func (g *GRPCMarshaller) GetPointByName(networkName, deviceName, pointName strin
 
 func (g *GRPCMarshaller) GetOnePointByArgs(args nargs.Args) (*model.Point, error) {
 	api := "/api/points/one/args"
-	res, err := g.DbHelper.Call(http.GET, api, args, nil)
+	res, err := g.DbHelper.CallDBHelper(http.GET, api, args, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -16,7 +16,7 @@ var HandshakeConfig = plugin.HandshakeConfig{
 }
 
 type DBHelper interface {
-	Call(method http.Method, api string, args nargs.Args, body []byte) ([]byte, error)
+	CallDBHelper(method http.Method, api string, args nargs.Args, body []byte) ([]byte, error)
 }
 
 type Info struct {
@@ -34,7 +34,7 @@ type Module interface {
 	Enable() error
 	Disable() error
 	GetInfo() (*Info, error)
-	Call(method http.Method, api string, args nargs.Args, body []byte) ([]byte, error)
+	CallModule(method http.Method, api string, args nargs.Args, body []byte) ([]byte, error)
 }
 
 // NubeModule is the implementation of plugin.Plugin so we can serve/consume this.

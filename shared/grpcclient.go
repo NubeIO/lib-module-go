@@ -75,10 +75,13 @@ func (m *GRPCClient) GetInfo() (*Info, error) {
 	}, nil
 }
 
-func (m *GRPCClient) Call(method http.Method, api string, args nargs.Args, body []byte) ([]byte, error) {
-	log.Debug("gRPC Call client has been called...")
-	apiArgs, _ := parser.SerializeArgs(args)
-	resp, err := m.client.Call(context.Background(), &proto.Request{
+func (m *GRPCClient) CallModule(method http.Method, api string, args nargs.Args, body []byte) ([]byte, error) {
+	log.Debug("gRPC Call client has been called...") // when server calls it first it lands here
+	apiArgs, err := parser.SerializeArgs(args)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := m.client.CallModule(context.Background(), &proto.Request{
 		Method: string(method),
 		Api:    api,
 		Args:   *apiArgs,
@@ -96,10 +99,16 @@ type GRPCDBHelperServer struct {
 	Impl DBHelper
 }
 
-func (m *GRPCDBHelperServer) Call(ctx context.Context, req *proto.Request) (resp *proto.Response, err error) {
-	method, _ := http.StringToMethod(req.Method)
-	apiArgs, _ := parser.DeserializeArgs(req.Args)
-	r, err := m.Impl.Call(method, req.Api, *apiArgs, req.Body)
+func (m *GRPCDBHelperServer) CallDBHelper(ctx context.Context, req *proto.Request) (resp *proto.Response, err error) {
+	method, err := http.StringToMethod(req.Method)
+	if err != nil {
+		return nil, err
+	}
+	apiArgs, err := parser.DeserializeArgs(req.Args)
+	if err != nil {
+		return nil, err
+	}
+	r, err := m.Impl.CallDBHelper(method, req.Api, *apiArgs, req.Body)
 	if err != nil {
 		return &proto.Response{R: nil, E: []byte(err.Error())}, nil
 	}

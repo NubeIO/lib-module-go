@@ -113,9 +113,9 @@ service Module {
   rpc Enable(Empty) returns (Empty);
   rpc Disable(Empty) returns (Empty);
   rpc GetInfo(Empty) returns (InfoResponse);
-  rpc Call(Request) returns (Response);
+  rpc CallModule(Request) returns (Response);
 }
 
 service DBHelper {
-  rpc Call(Request) returns (Response);
+  rpc CallDBHelper(Request) returns (Response);
 }

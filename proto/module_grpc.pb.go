@@ -27,7 +27,7 @@ const (
 	Module_Enable_FullMethodName               = "/proto.Module/Enable"
 	Module_Disable_FullMethodName              = "/proto.Module/Disable"
 	Module_GetInfo_FullMethodName              = "/proto.Module/GetInfo"
-	Module_Call_FullMethodName                 = "/proto.Module/Call"
+	Module_CallModule_FullMethodName           = "/proto.Module/CallModule"
 )
 
 // ModuleClient is the client API for Module service.
@@ -39,7 +39,7 @@ type ModuleClient interface {
 	Enable(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
 	Disable(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
 	GetInfo(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*InfoResponse, error)
-	Call(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+	CallModule(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
 }
 
 type moduleClient struct {
@@ -95,9 +95,9 @@ func (c *moduleClient) GetInfo(ctx context.Context, in *Empty, opts ...grpc.Call
 	return out, nil
 }
 
-func (c *moduleClient) Call(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+func (c *moduleClient) CallModule(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, Module_Call_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Module_CallModule_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +113,7 @@ type ModuleServer interface {
 	Enable(context.Context, *Empty) (*Empty, error)
 	Disable(context.Context, *Empty) (*Empty, error)
 	GetInfo(context.Context, *Empty) (*InfoResponse, error)
-	Call(context.Context, *Request) (*Response, error)
+	CallModule(context.Context, *Request) (*Response, error)
 }
 
 // UnimplementedModuleServer should be embedded to have forward compatible implementations.
@@ -135,8 +135,8 @@ func (UnimplementedModuleServer) Disable(context.Context, *Empty) (*Empty, error
 func (UnimplementedModuleServer) GetInfo(context.Context, *Empty) (*InfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetInfo not implemented")
 }
-func (UnimplementedModuleServer) Call(context.Context, *Request) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Call not implemented")
+func (UnimplementedModuleServer) CallModule(context.Context, *Request) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CallModule not implemented")
 }
 
 // UnsafeModuleServer may be embedded to opt out of forward compatibility for this service.
@@ -240,20 +240,20 @@ func _Module_GetInfo_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Module_Call_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Module_CallModule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ModuleServer).Call(ctx, in)
+		return srv.(ModuleServer).CallModule(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Module_Call_FullMethodName,
+		FullMethod: Module_CallModule_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ModuleServer).Call(ctx, req.(*Request))
+		return srv.(ModuleServer).CallModule(ctx, req.(*Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -286,8 +286,8 @@ var Module_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Module_GetInfo_Handler,
 		},
 		{
-			MethodName: "Call",
-			Handler:    _Module_Call_Handler,
+			MethodName: "CallModule",
+			Handler:    _Module_CallModule_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -295,14 +295,14 @@ var Module_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	DBHelper_Call_FullMethodName = "/proto.DBHelper/Call"
+	DBHelper_CallDBHelper_FullMethodName = "/proto.DBHelper/CallDBHelper"
 )
 
 // DBHelperClient is the client API for DBHelper service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DBHelperClient interface {
-	Call(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+	CallDBHelper(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
 }
 
 type dBHelperClient struct {
@@ -313,9 +313,9 @@ func NewDBHelperClient(cc grpc.ClientConnInterface) DBHelperClient {
 	return &dBHelperClient{cc}
 }
 
-func (c *dBHelperClient) Call(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+func (c *dBHelperClient) CallDBHelper(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, DBHelper_Call_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, DBHelper_CallDBHelper_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -326,15 +326,15 @@ func (c *dBHelperClient) Call(ctx context.Context, in *Request, opts ...grpc.Cal
 // All implementations should embed UnimplementedDBHelperServer
 // for forward compatibility
 type DBHelperServer interface {
-	Call(context.Context, *Request) (*Response, error)
+	CallDBHelper(context.Context, *Request) (*Response, error)
 }
 
 // UnimplementedDBHelperServer should be embedded to have forward compatible implementations.
 type UnimplementedDBHelperServer struct {
 }
 
-func (UnimplementedDBHelperServer) Call(context.Context, *Request) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Call not implemented")
+func (UnimplementedDBHelperServer) CallDBHelper(context.Context, *Request) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CallDBHelper not implemented")
 }
 
 // UnsafeDBHelperServer may be embedded to opt out of forward compatibility for this service.
@@ -348,20 +348,20 @@ func RegisterDBHelperServer(s grpc.ServiceRegistrar, srv DBHelperServer) {
 	s.RegisterService(&DBHelper_ServiceDesc, srv)
 }
 
-func _DBHelper_Call_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _DBHelper_CallDBHelper_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DBHelperServer).Call(ctx, in)
+		return srv.(DBHelperServer).CallDBHelper(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DBHelper_Call_FullMethodName,
+		FullMethod: DBHelper_CallDBHelper_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBHelperServer).Call(ctx, req.(*Request))
+		return srv.(DBHelperServer).CallDBHelper(ctx, req.(*Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -374,8 +374,8 @@ var DBHelper_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*DBHelperServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Call",
-			Handler:    _DBHelper_Call_Handler,
+			MethodName: "CallDBHelper",
+			Handler:    _DBHelper_CallDBHelper_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

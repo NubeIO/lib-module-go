@@ -79,11 +79,17 @@ func (m *GRPCServer) GetInfo(ctx context.Context, req *proto.Empty) (*proto.Info
 	}, nil
 }
 
-func (m *GRPCServer) Call(ctx context.Context, req *proto.Request) (*proto.Response, error) {
-	log.Debug("gRPC Call server has been called...")
-	method, _ := http.StringToMethod(req.Method)
-	apiArgs, _ := parser.DeserializeArgs(req.Args)
-	r, err := m.Impl.Call(method, req.Api, *apiArgs, req.Body)
+func (m *GRPCServer) CallModule(ctx context.Context, req *proto.Request) (*proto.Response, error) {
+	log.Debug("gRPC CallModule server has been called...") // when server calls it, it lands second (it is in module)
+	method, err := http.StringToMethod(req.Method)
+	if err != nil {
+		return nil, err
+	}
+	apiArgs, err := parser.DeserializeArgs(req.Args)
+	if err != nil {
+		return nil, err
+	}
+	r, err := m.Impl.CallModule(method, req.Api, *apiArgs, req.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -93,9 +99,13 @@ func (m *GRPCServer) Call(ctx context.Context, req *proto.Request) (*proto.Respo
 // GRPCDBHelperClient is an implementation of DBHelper that talks over RPC.
 type GRPCDBHelperClient struct{ client proto.DBHelperClient }
 
-func (m *GRPCDBHelperClient) Call(method http.Method, api string, args nargs.Args, body []byte) ([]byte, error) {
-	apiArgs, _ := parser.SerializeArgs(args)
-	resp, err := m.client.Call(context.Background(), &proto.Request{
+func (m *GRPCDBHelperClient) CallDBHelper(method http.Method, api string, args nargs.Args, body []byte) ([]byte, error) {
+	// This should call at first from module
+	apiArgs, err := parser.SerializeArgs(args)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := m.client.CallDBHelper(context.Background(), &proto.Request{
 		Method: string(method),
 		Api:    api,
 		Args:   *apiArgs,
