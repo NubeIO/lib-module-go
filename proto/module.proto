@@ -1,0 +1,121 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
+syntax = "proto3";
+package proto;
+
+option go_package = "github.com/NubeIO/lib-module-go/proto";
+
+message InitRequest {
+  uint32 add_server = 1;
+  string module_name = 2;
+}
+
+message Empty {}
+
+message ConfigBody {
+  bytes config = 1;
+}
+
+message Request {
+  string method = 1;
+  string api = 2;
+  string args = 3;
+  bytes body = 4;
+}
+
+message PatchWithOptsRequest {
+  string path = 1;
+  string uuid = 2;
+  bytes body = 3;
+  bytes opts = 4;
+}
+
+message DeleteRequest {
+  string path = 1;
+  string uuid = 2;
+}
+
+message SetErrorsForAllRequest {
+  string path = 1;
+  string uuid = 2;
+  string message = 3;
+  string messageLevel = 4;
+  string messageCode = 5;
+  bool doPoints = 6;
+}
+
+message ClearErrorsForAllRequest {
+  string path = 1;
+  string uuid = 2;
+  bool doPoints = 3;
+}
+
+message WizardNewNetworkDevicePointRequest {
+  string plugin = 1;
+  bytes network = 2;
+  bytes device = 3;
+  bytes point = 4;
+}
+
+message BoolResponse {
+  bool r = 1;
+  bytes e = 2;
+}
+
+message Response {
+  bytes r = 1;
+  bytes e = 2;
+}
+
+message InfoResponse {
+  string Name = 1;
+  string Author = 2;
+  string Website = 3;
+  string License = 4;
+  bool HasNetwork = 5;
+}
+
+message UrlPrefixResponse {
+  string r = 1;
+}
+
+message ErrorResponse {
+  bytes e = 1;
+}
+
+message DataDirRequest {
+  string name = 1;
+}
+
+message DataDirResponse {
+  string dir = 1;
+  bytes e = 2;
+}
+
+message MQTTPublishRequest {
+  string topic = 1;
+  bytes qos = 2;
+  bool retain = 3;
+  string body = 4;
+}
+
+message MQTTPublishNonBufferRequest {
+  string topic = 1;
+  bytes qos = 2;
+  bool retain = 3;
+  bytes body = 4;
+}
+
+service Module {
+  rpc ValidateAndSetConfig(ConfigBody) returns (Response);
+  rpc Init(InitRequest) returns (Empty);
+  rpc Enable(Empty) returns (Empty);
+  rpc Disable(Empty) returns (Empty);
+  rpc GetInfo(Empty) returns (InfoResponse);
+  rpc CallModule(Request) returns (Response);
+}
+
+service DBHelper {
+  rpc CallDBHelper(Request) returns (Response);
+}
