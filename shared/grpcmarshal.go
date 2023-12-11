@@ -52,6 +52,7 @@ type Marshaller interface {
 
 	GetPlugin(pluginUUID string, args nargs.Args) (*model.Plugin, error)
 	GetPluginByName(name string, args nargs.Args) (*model.Plugin, error)
+	UpdatePluginMessage(name string, body *model.Plugin) error
 	CreateModuleDir(name string) (*string, error)
 
 	CreateBulkHistory(histories []*model.History) (bool, error)
