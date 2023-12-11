@@ -45,3 +45,12 @@ func (g *GRPCMarshaller) CreateModuleDir(name string) (*string, error) {
 	r := string(res)
 	return &r, nil
 }
+
+func (g *GRPCMarshaller) UpdatePluginMessage(name string, body *model.Plugin) error {
+	api := fmt.Sprintf("/api/plugins/name/%s/message", name)
+	_, err := g.CallDBHelperWithParser(http.PATCH, api, nargs.Args{}, body)
+	if err != nil {
+		return err
+	}
+	return nil
+}
