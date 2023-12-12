@@ -39,7 +39,7 @@ func (router *Router) CallHandler(module *shared.Module, method http.Method, pat
 			}
 		}
 	}
-	return nil, fmt.Errorf("handler not found for path: %s and method: %s", path, method)
+	return nil, fmt.Errorf("handler not found for %s: %s", method, path)
 }
 
 // match checks if the given pattern matches the request path and extracts parameters
