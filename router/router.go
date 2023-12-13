@@ -9,8 +9,16 @@ import (
 	"strings"
 )
 
+type Request struct {
+	Path    string
+	Pattern string
+	Params  map[string]string
+	Args    nargs.Args
+	Body    []byte
+}
+
 // HandlerFunc defines the type for request handlers
-type HandlerFunc func(*shared.Module, string, map[string]string, nargs.Args, []byte) ([]byte, error)
+type HandlerFunc func(*shared.Module, *Request) ([]byte, error)
 
 // Router is a simple router that maps URL patterns to handlers
 type Router struct {
@@ -87,7 +95,13 @@ func (router *Router) CallHandler(module *shared.Module, method http.Method, pat
 		if params, ok := match(pattern, path); ok {
 			if handlers, exists := router.routes[pattern]; exists {
 				if handler, exists := handlers[method]; exists {
-					return handler(module, path, params, args, body)
+					return handler(module, &Request{
+						Path:    path,
+						Pattern: pattern,
+						Params:  params,
+						Args:    args,
+						Body:    body,
+					})
 				}
 			}
 		}

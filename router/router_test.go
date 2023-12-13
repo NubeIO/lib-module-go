@@ -56,30 +56,30 @@ func TestRouter(t *testing.T) {
 	assert.Equal(t, []byte("Hello, this is the GET: /api/:id/test with id: abc!"), res)
 }
 
-func GetTestHandler(m *shared.Module, path string, params map[string]string, args nargs.Args, body []byte) ([]byte, error) {
-	return []byte("Hello, this is the GET: /api/test!"), nil
+func GetTestHandler(m *shared.Module, r *Request) ([]byte, error) {
+	return []byte(fmt.Sprintf("Hello, this is the GET: %s!", r.Path)), nil
 }
 
-func PostTestHandler(m *shared.Module, path string, params map[string]string, args nargs.Args, body []byte) ([]byte, error) {
-	return []byte("Hello, this is the POST: /api/test!"), nil
+func PostTestHandler(m *shared.Module, r *Request) ([]byte, error) {
+	return []byte(fmt.Sprintf("Hello, this is the POST: %s!", r.Path)), nil
 }
 
-func GetIdHandler(m *shared.Module, path string, params map[string]string, args nargs.Args, body []byte) ([]byte, error) {
-	if id, ok := params["id"]; ok {
-		message := fmt.Sprintf("Hello, this is the GET: /api/:id with id: %s!", id)
+func GetIdHandler(m *shared.Module, r *Request) ([]byte, error) {
+	if id, ok := r.Params["id"]; ok {
+		message := fmt.Sprintf("Hello, this is the GET: %s with id: %s!", r.Pattern, id)
 		return []byte(message), nil
 	}
 	return nil, fmt.Errorf("missing id parameter")
 }
 
-func GetIdTestHandler(m *shared.Module, path string, params map[string]string, args nargs.Args, body []byte) ([]byte, error) {
-	if id, ok := params["id"]; ok {
-		message := fmt.Sprintf("Hello, this is the GET: /api/:id/test with id: %s!", id)
+func GetIdTestHandler(m *shared.Module, r *Request) ([]byte, error) {
+	if id, ok := r.Params["id"]; ok {
+		message := fmt.Sprintf("Hello, this is the GET: %s with id: %s!", r.Pattern, id)
 		return []byte(message), nil
 	}
 	return nil, fmt.Errorf("missing id parameter")
 }
 
-func GetProxyHandler(m *shared.Module, path string, params map[string]string, args nargs.Args, body []byte) ([]byte, error) {
-	return []byte(fmt.Sprintf("Hello, this is the GET: %s proxy!", path)), nil
+func GetProxyHandler(m *shared.Module, r *Request) ([]byte, error) {
+	return []byte(fmt.Sprintf("Hello, this is the GET: %s proxy!", r.Path)), nil
 }
