@@ -1,4 +1,4 @@
-package shared
+package module
 
 import (
 	"github.com/NubeIO/lib-module-go/http"

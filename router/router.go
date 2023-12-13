@@ -3,7 +3,7 @@ package router
 import (
 	"fmt"
 	"github.com/NubeIO/lib-module-go/http"
-	"github.com/NubeIO/lib-module-go/shared"
+	"github.com/NubeIO/lib-module-go/module"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 	"sort"
 	"strings"
@@ -18,7 +18,7 @@ type Request struct {
 }
 
 // HandlerFunc defines the type for request handlers
-type HandlerFunc func(*shared.Module, *Request) ([]byte, error)
+type HandlerFunc func(*module.Module, *Request) ([]byte, error)
 
 // Router is a simple router that maps URL patterns to handlers
 type Router struct {
@@ -89,7 +89,7 @@ func (router *Router) Handle(method http.Method, pattern string, handler Handler
 	router.routes[pattern][method] = handler
 }
 
-func (router *Router) CallHandler(module *shared.Module, method http.Method, path string, args nargs.Args, body []byte) ([]byte, error) {
+func (router *Router) CallHandler(module *module.Module, method http.Method, path string, args nargs.Args, body []byte) ([]byte, error) {
 	orderedPatterns := router.OrderPatterns()
 	for _, pattern := range orderedPatterns {
 		if params, ok := match(pattern, path); ok {
