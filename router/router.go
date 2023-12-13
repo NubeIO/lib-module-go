@@ -30,12 +30,15 @@ func (router *Router) OrderPatterns() []string {
 	if router.needsReorder {
 		return router.orderedPatterns
 	}
+	var patternsWithWildcard []string
 	var staticPatterns []string
 	var dynamicPatterns []string
 	dynamicPatternCount := make(map[string]int) // Initialize the map
 
 	for pattern := range router.routes {
-		if containsDynamicSegments(pattern) {
+		if strings.Contains(pattern, "/*") {
+			patternsWithWildcard = append(patternsWithWildcard, pattern)
+		} else if containsDynamicSegments(pattern) {
 			dynamicPatterns = append(dynamicPatterns, pattern)
 			// Count the number of dynamic segments in the pattern
 			dynamicPatternCount[pattern] = countDynamicSegments(pattern)
@@ -49,7 +52,10 @@ func (router *Router) OrderPatterns() []string {
 		return dynamicPatternCount[dynamicPatterns[i]] > dynamicPatternCount[dynamicPatterns[j]]
 	})
 
-	return append(staticPatterns, dynamicPatterns...)
+	router.orderedPatterns = append(staticPatterns, dynamicPatterns...)
+	router.orderedPatterns = append(router.orderedPatterns, patternsWithWildcard...)
+
+	return router.orderedPatterns
 }
 
 // Helper function to count the number of dynamic segments in a pattern
@@ -100,6 +106,9 @@ func match(pattern, path string) (map[string]string, bool) {
 
 	params := make(map[string]string)
 	for i, segment := range patternSegments {
+		if segment == "*" {
+			return params, true
+		}
 		if strings.HasPrefix(segment, ":") {
 			// Capture dynamic parts and store in params map
 			paramName := strings.TrimPrefix(segment, ":")

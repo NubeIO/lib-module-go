@@ -22,6 +22,19 @@ func TestRoutingOrder(t *testing.T) {
 	assert.Equal(t, []byte("Hello, this is the GET: /api/:id with id: abc!"), res)
 }
 
+func TestRoutingWildcard(t *testing.T) {
+	router := NewRouter()
+	router.Handle(http.GET, "/api/test", GetTestHandler)
+	router.Handle(http.GET, "/api/*", GetProxyHandler)
+
+	var module *shared.Module
+	res, _ := router.CallHandler(module, http.GET, "/api/test", nargs.Args{}, nil)
+	assert.Equal(t, []byte("Hello, this is the GET: /api/test!"), res)
+
+	res, _ = router.CallHandler(module, http.GET, "/api/abc", nargs.Args{}, nil)
+	assert.Equal(t, []byte("Hello, this is the GET: /api/abc proxy!"), res)
+}
+
 func TestRouter(t *testing.T) {
 	router := NewRouter()
 	router.Handle(http.GET, "/api/test", GetTestHandler)
@@ -65,4 +78,8 @@ func GetIdTestHandler(m *shared.Module, path string, params map[string]string, a
 		return []byte(message), nil
 	}
 	return nil, fmt.Errorf("missing id parameter")
+}
+
+func GetProxyHandler(m *shared.Module, path string, params map[string]string, args nargs.Args, body []byte) ([]byte, error) {
+	return []byte(fmt.Sprintf("Hello, this is the GET: %s proxy!", path)), nil
 }
