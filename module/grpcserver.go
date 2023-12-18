@@ -79,17 +79,16 @@ func (m *GRPCServer) GetInfo(ctx context.Context, req *proto.Empty) (*proto.Info
 	}, nil
 }
 
-func (m *GRPCServer) CallModule(ctx context.Context, req *proto.Request) (*proto.Response, error) {
+func (m *GRPCServer) CallModule(ctx context.Context, req *proto.RequestModule) (*proto.Response, error) {
 	log.Debug("gRPC CallModule server has been called...") // when server calls it, it lands second (it is in module)
 	method, err := http.StringToMethod(req.Method)
 	if err != nil {
 		return nil, err
 	}
-	apiArgs, err := parser.DeserializeArgs(req.Args)
 	if err != nil {
 		return nil, err
 	}
-	r, err := m.Impl.CallModule(method, req.Api, *apiArgs, req.Body)
+	r, err := m.Impl.CallModule(method, req.UrlString, req.Body)
 	if err != nil {
 		return nil, err
 	}

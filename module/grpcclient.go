@@ -5,7 +5,6 @@ import (
 	"github.com/NubeIO/lib-module-go/http"
 	"github.com/NubeIO/lib-module-go/parser"
 	"github.com/NubeIO/lib-module-go/proto"
-	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 	"github.com/hashicorp/go-plugin"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -75,17 +74,12 @@ func (m *GRPCClient) GetInfo() (*Info, error) {
 	}, nil
 }
 
-func (m *GRPCClient) CallModule(method http.Method, api string, args nargs.Args, body []byte) ([]byte, error) {
+func (m *GRPCClient) CallModule(method http.Method, urlString string, body []byte) ([]byte, error) {
 	log.Debug("gRPC Call client has been called...") // when server calls it first it lands here
-	apiArgs, err := parser.SerializeArgs(args)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := m.client.CallModule(context.Background(), &proto.Request{
-		Method: string(method),
-		Api:    api,
-		Args:   *apiArgs,
-		Body:   body,
+	resp, err := m.client.CallModule(context.Background(), &proto.RequestModule{
+		Method:    string(method),
+		UrlString: urlString,
+		Body:      body,
 	})
 	if err != nil {
 		return nil, err
