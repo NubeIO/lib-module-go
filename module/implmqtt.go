@@ -1,7 +1,7 @@
 package module
 
 import (
-	"github.com/NubeIO/lib-module-go/http"
+	"github.com/NubeIO/lib-module-go/nhttp"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 )
@@ -15,7 +15,7 @@ func (g *GRPCMarshaller) Publish(topic string, qos model.QOS, retain bool, paylo
 		Payload: payload,
 	}
 
-	_, err := g.CallDBHelperWithParser(http.POST, api, nargs.Args{}, body)
+	_, err := g.CallDBHelperWithParser(nhttp.POST, api, nargs.Args{}, body)
 	return err
 }
 
@@ -28,6 +28,6 @@ func (g *GRPCMarshaller) PublishNonBuffer(topic string, qos model.QOS, retain bo
 		Payload: payload,
 	}
 
-	_, err := g.CallDBHelperWithParser(http.POST, api, nargs.Args{}, body)
+	_, err := g.CallDBHelperWithParser(nhttp.POST, api, nargs.Args{}, body)
 	return err
 }

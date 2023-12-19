@@ -2,8 +2,9 @@ package router
 
 import (
 	"fmt"
-	"github.com/NubeIO/lib-module-go/http"
 	"github.com/NubeIO/lib-module-go/module"
+	"github.com/NubeIO/lib-module-go/nhttp"
+	"net/http"
 	"net/url"
 	"sort"
 	"strings"
@@ -14,6 +15,7 @@ type Request struct {
 	Pattern     string
 	PathParams  map[string]string
 	QueryParams url.Values
+	Headers     http.Header
 	Body        []byte
 }
 
@@ -22,7 +24,7 @@ type HandlerFunc func(*module.Module, *Request) ([]byte, error)
 
 // Router is a simple router that maps URL patterns to handlers
 type Router struct {
-	routes          map[string]map[http.Method]HandlerFunc
+	routes          map[string]map[nhttp.Method]HandlerFunc
 	orderedPatterns []string
 	needsReorder    bool
 }
@@ -30,7 +32,7 @@ type Router struct {
 // NewRouter creates a new Router instance
 func NewRouter() *Router {
 	return &Router{
-		routes: make(map[string]map[http.Method]HandlerFunc),
+		routes: make(map[string]map[nhttp.Method]HandlerFunc),
 	}
 }
 
@@ -82,14 +84,14 @@ func containsDynamicSegments(pattern string) bool {
 }
 
 // Handle registers a handler for a specific pattern and HTTP method
-func (router *Router) Handle(method http.Method, pattern string, handler HandlerFunc) {
+func (router *Router) Handle(method nhttp.Method, pattern string, handler HandlerFunc) {
 	if _, exists := router.routes[pattern]; !exists {
-		router.routes[pattern] = make(map[http.Method]HandlerFunc)
+		router.routes[pattern] = make(map[nhttp.Method]HandlerFunc)
 	}
 	router.routes[pattern][method] = handler
 }
 
-func (router *Router) CallHandler(module *module.Module, method http.Method, urlString string, body []byte) ([]byte, error) {
+func (router *Router) CallHandler(module *module.Module, method nhttp.Method, urlString string, headers http.Header, body []byte) ([]byte, error) {
 	parsedURL, err := url.Parse(urlString)
 	if err != nil {
 		return nil, err
@@ -104,6 +106,7 @@ func (router *Router) CallHandler(module *module.Module, method http.Method, url
 						Pattern:     pattern,
 						PathParams:  params,
 						QueryParams: parsedURL.Query(),
+						Headers:     headers,
 						Body:        body,
 					})
 				}

@@ -3,14 +3,14 @@ package module
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/NubeIO/lib-module-go/http"
+	"github.com/NubeIO/lib-module-go/nhttp"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 )
 
 func (g *GRPCMarshaller) GetHistoryLogByHostUUID(hostUUID string) (*model.HistoryLog, error) {
 	api := fmt.Sprintf("/api/history-logs/host-uuid/%s", hostUUID)
-	res, err := g.DbHelper.CallDBHelper(http.GET, api, nargs.Args{}, nil)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nargs.Args{}, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +24,7 @@ func (g *GRPCMarshaller) GetHistoryLogByHostUUID(hostUUID string) (*model.Histor
 
 func (g *GRPCMarshaller) UpdateBulkHistoryLogs(logs []*model.HistoryLog) (bool, error) {
 	api := "/api/history-logs"
-	_, err := g.CallDBHelperWithParser(http.PATCH, api, nargs.Args{}, logs)
+	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, nargs.Args{}, logs)
 	if err != nil {
 		return false, err
 	}

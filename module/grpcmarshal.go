@@ -2,7 +2,7 @@ package module
 
 import (
 	"encoding/json"
-	"github.com/NubeIO/lib-module-go/http"
+	"github.com/NubeIO/lib-module-go/nhttp"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 )
@@ -86,7 +86,7 @@ type GRPCMarshaller struct {
 	DbHelper DBHelper
 }
 
-func (g *GRPCMarshaller) CallDBHelperWithParser(method http.Method, api string, args nargs.Args, body interface{}) (
+func (g *GRPCMarshaller) CallDBHelperWithParser(method nhttp.Method, api string, args nargs.Args, body interface{}) (
 	[]byte, error) {
 	b, err := json.Marshal(body)
 	if err != nil {

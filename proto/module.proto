@@ -17,9 +17,24 @@ message ConfigBody {
   bytes config = 1;
 }
 
+message InfoResponse {
+  string Name = 1;
+  string Author = 2;
+  string Website = 3;
+  string License = 4;
+  bool HasNetwork = 5;
+}
+
+
+message Header {
+  string key = 1;
+  repeated string values = 2;
+}
+
 message RequestModule {
   string Method = 1;
   string UrlString = 2;
+  repeated Header Headers = 3;
   bytes Body = 4;
 }
 
@@ -33,14 +48,6 @@ message Request {
 message Response {
   bytes r = 1;
   bytes e = 2;
-}
-
-message InfoResponse {
-  string Name = 1;
-  string Author = 2;
-  string Website = 3;
-  string License = 4;
-  bool HasNetwork = 5;
 }
 
 service Module {

@@ -2,12 +2,13 @@ package module
 
 import (
 	"context"
-	"github.com/NubeIO/lib-module-go/http"
+	"github.com/NubeIO/lib-module-go/nhttp"
 	"github.com/NubeIO/lib-module-go/parser"
 	"github.com/NubeIO/lib-module-go/proto"
 	"github.com/hashicorp/go-plugin"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
+	"net/http"
 )
 
 // GRPCClient is an implementation of Module that talks over RPC.
@@ -74,11 +75,24 @@ func (m *GRPCClient) GetInfo() (*Info, error) {
 	}, nil
 }
 
-func (m *GRPCClient) CallModule(method http.Method, urlString string, body []byte) ([]byte, error) {
+func ConvertHTTPToHeaders(httpHeaders http.Header) []*proto.Header {
+	var headers []*proto.Header
+	for key, values := range httpHeaders {
+		header := &proto.Header{
+			Key:    key,
+			Values: values,
+		}
+		headers = append(headers, header)
+	}
+	return headers
+}
+
+func (m *GRPCClient) CallModule(method nhttp.Method, urlString string, headers http.Header, body []byte) ([]byte, error) {
 	log.Debug("gRPC Call client has been called...") // when server calls it first it lands here
 	resp, err := m.client.CallModule(context.Background(), &proto.RequestModule{
 		Method:    string(method),
 		UrlString: urlString,
+		Headers:   ConvertHTTPToHeaders(headers),
 		Body:      body,
 	})
 	if err != nil {
@@ -94,7 +108,7 @@ type GRPCDBHelperServer struct {
 }
 
 func (m *GRPCDBHelperServer) CallDBHelper(ctx context.Context, req *proto.Request) (resp *proto.Response, err error) {
-	method, err := http.StringToMethod(req.Method)
+	method, err := nhttp.StringToMethod(req.Method)
 	if err != nil {
 		return nil, err
 	}
