@@ -5,7 +5,7 @@ go 1.18
 //replace github.com/NubeIO/nubeio-rubix-lib-models-go => /Users/raibnod/Enviro/nubeio-rubix-lib-models-go
 
 require (
-	github.com/NubeIO/nubeio-rubix-lib-models-go v1.11.2
+	github.com/NubeIO/nubeio-rubix-lib-models-go v1.11.3
 	github.com/hashicorp/go-plugin v1.4.9
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.7.0

@@ -8,9 +8,9 @@ import (
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 )
 
-func (g *GRPCMarshaller) CreateDevice(body *model.Device) (*model.Device, error) {
+func (g *GRPCMarshaller) CreateDevice(body *model.Device, opts ...*Opts) (*model.Device, error) {
 	api := "/api/devices"
-	res, err := g.CallDBHelperWithParser(nhttp.POST, api, nargs.Args{}, body)
+	res, err := g.CallDBHelperWithParser(nhttp.POST, api, nargs.Args{}, body, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -22,9 +22,9 @@ func (g *GRPCMarshaller) CreateDevice(body *model.Device) (*model.Device, error)
 	return device, nil
 }
 
-func (g *GRPCMarshaller) GetDevices(args nargs.Args) ([]*model.Device, error) {
+func (g *GRPCMarshaller) GetDevices(args nargs.Args, opts ...*Opts) ([]*model.Device, error) {
 	api := "/api/devices"
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, args, nil)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, args, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -36,9 +36,9 @@ func (g *GRPCMarshaller) GetDevices(args nargs.Args) ([]*model.Device, error) {
 	return devices, nil
 }
 
-func (g *GRPCMarshaller) GetDevice(uuid string, args nargs.Args) (*model.Device, error) {
+func (g *GRPCMarshaller) GetDevice(uuid string, args nargs.Args, opts ...*Opts) (*model.Device, error) {
 	api := fmt.Sprintf("/api/devices/%s", uuid)
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, args, nil)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, args, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -50,9 +50,9 @@ func (g *GRPCMarshaller) GetDevice(uuid string, args nargs.Args) (*model.Device,
 	return device, nil
 }
 
-func (g *GRPCMarshaller) GetDeviceByName(networkName, deviceName string, args nargs.Args) (*model.Device, error) {
+func (g *GRPCMarshaller) GetDeviceByName(networkName, deviceName string, args nargs.Args, opts ...*Opts) (*model.Device, error) {
 	api := fmt.Sprintf("/api/devices/name/%s/%s", networkName, deviceName)
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, args, nil)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, args, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -64,9 +64,9 @@ func (g *GRPCMarshaller) GetDeviceByName(networkName, deviceName string, args na
 	return device, nil
 }
 
-func (g *GRPCMarshaller) GetOneDeviceByArgs(args nargs.Args) (*model.Device, error) {
+func (g *GRPCMarshaller) GetOneDeviceByArgs(args nargs.Args, opts ...*Opts) (*model.Device, error) {
 	api := "/api/devices/one/args"
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, args, nil)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, args, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -78,9 +78,9 @@ func (g *GRPCMarshaller) GetOneDeviceByArgs(args nargs.Args) (*model.Device, err
 	return device, nil
 }
 
-func (g *GRPCMarshaller) UpdateDevice(uuid string, body *model.Device) (*model.Device, error) {
+func (g *GRPCMarshaller) UpdateDevice(uuid string, body *model.Device, opts ...*Opts) (*model.Device, error) {
 	api := fmt.Sprintf("/api/devices/%s", uuid)
-	res, err := g.CallDBHelperWithParser(nhttp.PATCH, api, nargs.Args{}, body)
+	res, err := g.CallDBHelperWithParser(nhttp.PATCH, api, nargs.Args{}, body, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -92,16 +92,16 @@ func (g *GRPCMarshaller) UpdateDevice(uuid string, body *model.Device) (*model.D
 	return device, nil
 }
 
-func (g *GRPCMarshaller) UpdateDeviceErrors(uuid string, body *model.Device) error {
+func (g *GRPCMarshaller) UpdateDeviceErrors(uuid string, body *model.Device, opts ...*Opts) error {
 	api := fmt.Sprintf("/api/devices/%s/error", uuid)
-	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, nargs.Args{}, body)
+	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, nargs.Args{}, body, opts...)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (g *GRPCMarshaller) UpdateDeviceDescendantsErrors(deviceUUID, message, messageLevel, messageCode string) error {
+func (g *GRPCMarshaller) UpdateDeviceDescendantsErrors(deviceUUID, message, messageLevel, messageCode string, opts ...*Opts) error {
 	api := fmt.Sprintf("/api/devices/%s/error/descendants", deviceUUID)
 	device := &model.Device{
 		CommonFault: model.CommonFault{
@@ -110,18 +110,18 @@ func (g *GRPCMarshaller) UpdateDeviceDescendantsErrors(deviceUUID, message, mess
 			MessageCode:  messageCode,
 		},
 	}
-	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, nargs.Args{}, device)
+	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, nargs.Args{}, device, opts...)
 	return err
 }
 
-func (g *GRPCMarshaller) ClearDeviceDescendantsErrors(deviceUUID string) error {
+func (g *GRPCMarshaller) ClearDeviceDescendantsErrors(deviceUUID string, opts ...*Opts) error {
 	api := fmt.Sprintf("/api/devices/%s/error/descendants", deviceUUID)
-	_, err := g.DbHelper.CallDBHelper(nhttp.DELETE, api, nargs.Args{}, nil)
+	_, err := g.DbHelper.CallDBHelper(nhttp.DELETE, api, nargs.Args{}, nil, opts...)
 	return err
 }
 
-func (g *GRPCMarshaller) DeleteDevice(uuid string) error {
+func (g *GRPCMarshaller) DeleteDevice(uuid string, opts ...*Opts) error {
 	api := fmt.Sprintf("/api/devices/%s", uuid)
-	_, err := g.DbHelper.CallDBHelper(nhttp.DELETE, api, nargs.Args{}, nil)
+	_, err := g.DbHelper.CallDBHelper(nhttp.DELETE, api, nargs.Args{}, nil, opts...)
 	return err
 }

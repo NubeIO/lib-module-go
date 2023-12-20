@@ -3,8 +3,8 @@ package module
 import (
 	"context"
 	"github.com/NubeIO/lib-module-go/nhttp"
-	"github.com/NubeIO/lib-module-go/parser"
 	"github.com/NubeIO/lib-module-go/proto"
+	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 	"github.com/hashicorp/go-plugin"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -112,11 +112,16 @@ func (m *GRPCDBHelperServer) CallDBHelper(ctx context.Context, req *proto.Reques
 	if err != nil {
 		return nil, err
 	}
-	apiArgs, err := parser.DeserializeArgs(req.Args)
+	apiArgs, err := nargs.DeserializeArgs(req.Args)
 	if err != nil {
 		return nil, err
 	}
-	r, err := m.Impl.CallDBHelper(method, req.Api, *apiArgs, req.Body)
+	var r []byte
+	if req.HostUUID != nil {
+		r, err = m.Impl.CallDBHelper(method, req.Api, *apiArgs, req.Body, &Opts{HostUUID: *req.HostUUID})
+	} else {
+		r, err = m.Impl.CallDBHelper(method, req.Api, *apiArgs, req.Body)
+	}
 	if err != nil {
 		return &proto.Response{R: nil, E: []byte(err.Error())}, nil
 	}

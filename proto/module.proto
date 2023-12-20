@@ -25,7 +25,6 @@ message InfoResponse {
   bool HasNetwork = 5;
 }
 
-
 message Header {
   string key = 1;
   repeated string values = 2;
@@ -43,6 +42,7 @@ message Request {
   string Api = 2;
   string Args = 3;
   bytes Body = 4;
+  optional string HostUUID = 5;
 }
 
 message Response {

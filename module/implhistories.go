@@ -8,27 +8,27 @@ import (
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 )
 
-func (g *GRPCMarshaller) CreateBulkHistory(histories []*model.History) (bool, error) {
+func (g *GRPCMarshaller) CreateBulkHistory(histories []*model.History, opts ...*Opts) (bool, error) {
 	api := "/api/histories"
-	_, err := g.CallDBHelperWithParser(nhttp.POST, api, nargs.Args{}, histories)
+	_, err := g.CallDBHelperWithParser(nhttp.POST, api, nargs.Args{}, histories, opts...)
 	if err != nil {
 		return false, err
 	}
 	return true, nil
 }
 
-func (g *GRPCMarshaller) CreateBulkPointHistory(histories []*model.PointHistory) (bool, error) {
+func (g *GRPCMarshaller) CreateBulkPointHistory(histories []*model.PointHistory, opts ...*Opts) (bool, error) {
 	api := "/api/histories/points"
-	_, err := g.CallDBHelperWithParser(nhttp.POST, api, nargs.Args{}, histories)
+	_, err := g.CallDBHelperWithParser(nhttp.POST, api, nargs.Args{}, histories, opts...)
 	if err != nil {
 		return false, err
 	}
 	return true, nil
 }
 
-func (g *GRPCMarshaller) GetLatestHistoryByHostAndPointUUID(hostUUID, pointUUID string) (*model.History, error) {
+func (g *GRPCMarshaller) GetLatestHistoryByHostAndPointUUID(hostUUID, pointUUID string, opts ...*Opts) (*model.History, error) {
 	api := fmt.Sprintf("/api/histories/points/point-uuid/%s/host-uuid/%s/latest", pointUUID, hostUUID)
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nargs.Args{}, nil)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nargs.Args{}, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -40,9 +40,9 @@ func (g *GRPCMarshaller) GetLatestHistoryByHostAndPointUUID(hostUUID, pointUUID 
 	return history, nil
 }
 
-func (g *GRPCMarshaller) GetPointHistoriesMissingTimestamps(pointUUID string) ([]string, error) {
+func (g *GRPCMarshaller) GetPointHistoriesMissingTimestamps(pointUUID string, opts ...*Opts) ([]string, error) {
 	api := fmt.Sprintf("/api/histories/points/point-uuid/%s/missing-timestamps", pointUUID)
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nargs.Args{}, nil)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nargs.Args{}, nil, opts...)
 	if err != nil {
 		return nil, err
 	}

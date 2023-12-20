@@ -17,7 +17,7 @@ var HandshakeConfig = plugin.HandshakeConfig{
 }
 
 type DBHelper interface {
-	CallDBHelper(method nhttp.Method, api string, args nargs.Args, body []byte) ([]byte, error)
+	CallDBHelper(method nhttp.Method, api string, args nargs.Args, body []byte, opts ...*Opts) ([]byte, error)
 }
 
 type Info struct {

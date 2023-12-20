@@ -8,9 +8,9 @@ import (
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 )
 
-func (g *GRPCMarshaller) GetSchedules() ([]*model.Schedule, error) {
+func (g *GRPCMarshaller) GetSchedules(opts ...*Opts) ([]*model.Schedule, error) {
 	api := "/api/schedules"
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nargs.Args{}, nil)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nargs.Args{}, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -21,9 +21,9 @@ func (g *GRPCMarshaller) GetSchedules() ([]*model.Schedule, error) {
 	return schedules, nil
 }
 
-func (g *GRPCMarshaller) UpdateScheduleAllProps(uuid string, body *model.Schedule) (*model.Schedule, error) {
+func (g *GRPCMarshaller) UpdateScheduleAllProps(uuid string, body *model.Schedule, opts ...*Opts) (*model.Schedule, error) {
 	api := fmt.Sprintf("/api/schedules/%s/all-props", uuid)
-	res, err := g.CallDBHelperWithParser(nhttp.PATCH, api, nargs.Args{}, body)
+	res, err := g.CallDBHelperWithParser(nhttp.PATCH, api, nargs.Args{}, body, opts...)
 	if err != nil {
 		return nil, err
 	}

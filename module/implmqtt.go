@@ -6,7 +6,7 @@ import (
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 )
 
-func (g *GRPCMarshaller) Publish(topic string, qos model.QOS, retain bool, payload string) error {
+func (g *GRPCMarshaller) Publish(topic string, qos model.QOS, retain bool, payload string, opts ...*Opts) error {
 	api := "/api/mqtt/publish"
 	body := model.MqttBody{
 		Topic:   topic,
@@ -15,11 +15,11 @@ func (g *GRPCMarshaller) Publish(topic string, qos model.QOS, retain bool, paylo
 		Payload: payload,
 	}
 
-	_, err := g.CallDBHelperWithParser(nhttp.POST, api, nargs.Args{}, body)
+	_, err := g.CallDBHelperWithParser(nhttp.POST, api, nargs.Args{}, body, opts...)
 	return err
 }
 
-func (g *GRPCMarshaller) PublishNonBuffer(topic string, qos model.QOS, retain bool, payload string) error {
+func (g *GRPCMarshaller) PublishNonBuffer(topic string, qos model.QOS, retain bool, payload string, opts ...*Opts) error {
 	api := "/api/mqtt/publish-non-buffer"
 	body := model.MqttBody{
 		Topic:   topic,
@@ -28,6 +28,6 @@ func (g *GRPCMarshaller) PublishNonBuffer(topic string, qos model.QOS, retain bo
 		Payload: payload,
 	}
 
-	_, err := g.CallDBHelperWithParser(nhttp.POST, api, nargs.Args{}, body)
+	_, err := g.CallDBHelperWithParser(nhttp.POST, api, nargs.Args{}, body, opts...)
 	return err
 }
