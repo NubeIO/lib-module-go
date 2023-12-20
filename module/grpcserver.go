@@ -115,15 +115,19 @@ func (m *GRPCDBHelperServer) CallDBHelper(ctx context.Context, req *proto.Reques
 	if err != nil {
 		return nil, err
 	}
-	apiArgs, err := nargs.DeserializeArgs(req.Args)
-	if err != nil {
-		return nil, err
+	var apiArgs *nargs.Args
+	if req.Args != nil {
+		apiArgs, err = nargs.DeserializeArgs(*req.Args)
+		if err != nil {
+			return nil, err
+		}
 	}
+
 	var r []byte
 	if req.HostUUID != nil {
-		r, err = m.Impl.CallDBHelper(method, req.Api, *apiArgs, req.Body, &Opts{HostUUID: *req.HostUUID})
+		r, err = m.Impl.CallDBHelper(method, req.Api, req.Body, &Opts{Args: apiArgs, HostUUID: req.HostUUID})
 	} else {
-		r, err = m.Impl.CallDBHelper(method, req.Api, *apiArgs, req.Body)
+		r, err = m.Impl.CallDBHelper(method, req.Api, req.Body)
 	}
 	if err != nil {
 		return &proto.Response{R: nil, E: []byte(err.Error())}, nil

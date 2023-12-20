@@ -105,21 +105,25 @@ func (m *GRPCClient) CallModule(method nhttp.Method, urlString string, headers h
 // GRPCDBHelperClient is an implementation of DBHelper that talks over RPC.
 type GRPCDBHelperClient struct{ client proto.DBHelperClient }
 
-func (m *GRPCDBHelperClient) CallDBHelper(method nhttp.Method, api string, args nargs.Args, body []byte, opts ...*Opts) ([]byte, error) {
+func (m *GRPCDBHelperClient) CallDBHelper(method nhttp.Method, api string, body []byte, opts ...*Opts) ([]byte, error) {
 	// This should call at first from module
-	apiArgs, err := nargs.SerializeArgs(args)
-	if err != nil {
-		return nil, err
-	}
+	var apiArgs *string
 	var hostUUID *string
+	var err error
 	if len(opts) > 0 {
-		hostUUID = &opts[0].HostUUID
+		if opts[0].Args != nil {
+			apiArgs, err = nargs.SerializeArgs(*opts[0].Args)
+			if err != nil {
+				return nil, err
+			}
+		}
+		hostUUID = opts[0].HostUUID
 	}
 	resp, err := m.client.CallDBHelper(context.Background(), &proto.Request{
 		Method:   string(method),
 		Api:      api,
-		Args:     *apiArgs,
 		Body:     body,
+		Args:     apiArgs,
 		HostUUID: hostUUID,
 	})
 	if err != nil {

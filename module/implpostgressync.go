@@ -11,7 +11,12 @@ import (
 func (g *GRPCMarshaller) GetHistoriesForPostgresSync(lastSyncId int, opts ...*Opts) ([]*model.History, error) {
 	api := "/api/postgres-sync/histories"
 	lastSyncIdStr := strconv.Itoa(lastSyncId)
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nargs.Args{IdGt: &lastSyncIdStr}, nil, opts...)
+	if len(opts) > 0 {
+		opts[0].Args = &nargs.Args{IdGt: &lastSyncIdStr}
+	} else {
+		opts = append(opts, &Opts{Args: &nargs.Args{IdGt: &lastSyncIdStr}})
+	}
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -25,7 +30,7 @@ func (g *GRPCMarshaller) GetHistoriesForPostgresSync(lastSyncId int, opts ...*Op
 
 func (g *GRPCMarshaller) GetPointsForPostgresSync(opts ...*Opts) ([]*model.PointForPostgresSync, error) {
 	api := "/api/postgres-sync/points"
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nargs.Args{}, nil, opts...)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +44,7 @@ func (g *GRPCMarshaller) GetPointsForPostgresSync(opts ...*Opts) ([]*model.Point
 
 func (g *GRPCMarshaller) GetNetworksTagsForPostgresSync(opts ...*Opts) ([]*model.NetworkTagForPostgresSync, error) {
 	api := "/api/postgres-sync/networks-tags"
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nargs.Args{}, nil, opts...)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +58,7 @@ func (g *GRPCMarshaller) GetNetworksTagsForPostgresSync(opts ...*Opts) ([]*model
 
 func (g *GRPCMarshaller) GetDevicesTagsForPostgresSync(opts ...*Opts) ([]*model.DeviceTagForPostgresSync, error) {
 	api := "/api/postgres-sync/devices-tags"
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nargs.Args{}, nil, opts...)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +72,7 @@ func (g *GRPCMarshaller) GetDevicesTagsForPostgresSync(opts ...*Opts) ([]*model.
 
 func (g *GRPCMarshaller) GetPointsTagsForPostgresSync(opts ...*Opts) ([]*model.PointTagForPostgresSync, error) {
 	api := "/api/postgres_sync/points-tags"
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nargs.Args{}, nil, opts...)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +86,7 @@ func (g *GRPCMarshaller) GetPointsTagsForPostgresSync(opts ...*Opts) ([]*model.P
 
 func (g *GRPCMarshaller) GetNetworksMetaTagsForPostgresSync(opts ...*Opts) ([]*model.NetworkMetaTag, error) {
 	api := "/api/postgres-sync/networks-meta-tags"
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nargs.Args{}, nil, opts...)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +100,7 @@ func (g *GRPCMarshaller) GetNetworksMetaTagsForPostgresSync(opts ...*Opts) ([]*m
 
 func (g *GRPCMarshaller) GetDevicesMetaTagsForPostgresSync(opts ...*Opts) ([]*model.DeviceMetaTag, error) {
 	api := "/api/postgres-sync/devices-meta-tags"
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nargs.Args{}, nil, opts...)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +114,7 @@ func (g *GRPCMarshaller) GetDevicesMetaTagsForPostgresSync(opts ...*Opts) ([]*mo
 
 func (g *GRPCMarshaller) GetPointsMetaTagsForPostgresSync(opts ...*Opts) ([]*model.PointMetaTag, error) {
 	api := "/api/postgres-sync/points-meta-tags"
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nargs.Args{}, nil, opts...)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +128,7 @@ func (g *GRPCMarshaller) GetPointsMetaTagsForPostgresSync(opts ...*Opts) ([]*mod
 
 func (g *GRPCMarshaller) GetLastSyncHistoryIdForPostgresSync(opts ...*Opts) (int, error) {
 	api := "/api/postgres-sync/last-sync-history-id"
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nargs.Args{}, nil, opts...)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return 0, err
 	}
@@ -138,7 +143,7 @@ func (g *GRPCMarshaller) GetLastSyncHistoryIdForPostgresSync(opts ...*Opts) (int
 func (g *GRPCMarshaller) UpdateLastSyncHistoryRowForPostgresSync(log *model.HistoryPostgresLog, opts ...*Opts) (
 	*model.HistoryPostgresLog, error) {
 	api := "/api/postgres-sync/last-sync-history-row"
-	res, err := g.CallDBHelperWithParser(nhttp.PATCH, api, nargs.Args{}, log, opts...)
+	res, err := g.CallDBHelperWithParser(nhttp.PATCH, api, log, opts...)
 	if err != nil {
 		return nil, err
 	}

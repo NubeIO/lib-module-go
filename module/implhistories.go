@@ -5,12 +5,11 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-module-go/nhttp"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
-	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 )
 
 func (g *GRPCMarshaller) CreateBulkHistory(histories []*model.History, opts ...*Opts) (bool, error) {
 	api := "/api/histories"
-	_, err := g.CallDBHelperWithParser(nhttp.POST, api, nargs.Args{}, histories, opts...)
+	_, err := g.CallDBHelperWithParser(nhttp.POST, api, histories, opts...)
 	if err != nil {
 		return false, err
 	}
@@ -19,7 +18,7 @@ func (g *GRPCMarshaller) CreateBulkHistory(histories []*model.History, opts ...*
 
 func (g *GRPCMarshaller) CreateBulkPointHistory(histories []*model.PointHistory, opts ...*Opts) (bool, error) {
 	api := "/api/histories/points"
-	_, err := g.CallDBHelperWithParser(nhttp.POST, api, nargs.Args{}, histories, opts...)
+	_, err := g.CallDBHelperWithParser(nhttp.POST, api, histories, opts...)
 	if err != nil {
 		return false, err
 	}
@@ -28,7 +27,7 @@ func (g *GRPCMarshaller) CreateBulkPointHistory(histories []*model.PointHistory,
 
 func (g *GRPCMarshaller) GetLatestHistoryByHostAndPointUUID(hostUUID, pointUUID string, opts ...*Opts) (*model.History, error) {
 	api := fmt.Sprintf("/api/histories/points/point-uuid/%s/host-uuid/%s/latest", pointUUID, hostUUID)
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nargs.Args{}, nil, opts...)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +41,7 @@ func (g *GRPCMarshaller) GetLatestHistoryByHostAndPointUUID(hostUUID, pointUUID 
 
 func (g *GRPCMarshaller) GetPointHistoriesMissingTimestamps(pointUUID string, opts ...*Opts) ([]string, error) {
 	api := fmt.Sprintf("/api/histories/points/point-uuid/%s/missing-timestamps", pointUUID)
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nargs.Args{}, nil, opts...)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}

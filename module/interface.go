@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/NubeIO/lib-module-go/nhttp"
 	"github.com/NubeIO/lib-module-go/proto"
-	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 	"github.com/hashicorp/go-plugin"
 	"google.golang.org/grpc"
 	"net/http"
@@ -17,7 +16,7 @@ var HandshakeConfig = plugin.HandshakeConfig{
 }
 
 type DBHelper interface {
-	CallDBHelper(method nhttp.Method, api string, args nargs.Args, body []byte, opts ...*Opts) ([]byte, error)
+	CallDBHelper(method nhttp.Method, api string, body []byte, opts ...*Opts) ([]byte, error)
 }
 
 type Info struct {

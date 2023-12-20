@@ -5,12 +5,11 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-module-go/nhttp"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
-	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 )
 
 func (g *GRPCMarshaller) GetHistoryLogByHostUUID(hostUUID string, opts ...*Opts) (*model.HistoryLog, error) {
 	api := fmt.Sprintf("/api/history-logs/host-uuid/%s", hostUUID)
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nargs.Args{}, nil, opts...)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +23,7 @@ func (g *GRPCMarshaller) GetHistoryLogByHostUUID(hostUUID string, opts ...*Opts)
 
 func (g *GRPCMarshaller) UpdateBulkHistoryLogs(logs []*model.HistoryLog, opts ...*Opts) (bool, error) {
 	api := "/api/history-logs"
-	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, nargs.Args{}, logs, opts...)
+	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, logs, opts...)
 	if err != nil {
 		return false, err
 	}

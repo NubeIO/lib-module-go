@@ -40,8 +40,8 @@ message RequestModule {
 message Request {
   string Method = 1;
   string Api = 2;
-  string Args = 3;
   bytes Body = 4;
+  optional string Args = 3;
   optional string HostUUID = 5;
 }
 
