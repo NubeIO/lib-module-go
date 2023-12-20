@@ -2,6 +2,7 @@ package module
 
 import (
 	"context"
+	"errors"
 	"github.com/NubeIO/lib-module-go/nhttp"
 	"github.com/NubeIO/lib-module-go/proto"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
@@ -101,29 +102,32 @@ func (m *GRPCClient) CallModule(method nhttp.Method, urlString string, headers h
 	return resp.R, nil
 }
 
-// GRPCDBHelperServer is the gRPC server that GRPCDBHelperClient talks to.
-type GRPCDBHelperServer struct {
-	// This is the real implementation
-	Impl DBHelper
-}
+// GRPCDBHelperClient is an implementation of DBHelper that talks over RPC.
+type GRPCDBHelperClient struct{ client proto.DBHelperClient }
 
-func (m *GRPCDBHelperServer) CallDBHelper(ctx context.Context, req *proto.Request) (resp *proto.Response, err error) {
-	method, err := nhttp.StringToMethod(req.Method)
+func (m *GRPCDBHelperClient) CallDBHelper(method nhttp.Method, api string, args nargs.Args, body []byte, opts ...*Opts) ([]byte, error) {
+	// This should call at first from module
+	apiArgs, err := nargs.SerializeArgs(args)
 	if err != nil {
 		return nil, err
 	}
-	apiArgs, err := nargs.DeserializeArgs(req.Args)
+	var hostUUID *string
+	if len(opts) > 0 {
+		hostUUID = &opts[0].HostUUID
+	}
+	resp, err := m.client.CallDBHelper(context.Background(), &proto.Request{
+		Method:   string(method),
+		Api:      api,
+		Args:     *apiArgs,
+		Body:     body,
+		HostUUID: hostUUID,
+	})
 	if err != nil {
 		return nil, err
 	}
-	var r []byte
-	if req.HostUUID != nil {
-		r, err = m.Impl.CallDBHelper(method, req.Api, *apiArgs, req.Body, &Opts{HostUUID: *req.HostUUID})
-	} else {
-		r, err = m.Impl.CallDBHelper(method, req.Api, *apiArgs, req.Body)
+	if resp.E != nil {
+		errStr := string(resp.E)
+		return nil, errors.New(errStr)
 	}
-	if err != nil {
-		return &proto.Response{R: nil, E: []byte(err.Error())}, nil
-	}
-	return &proto.Response{R: r, E: nil}, nil
+	return resp.R, nil
 }
