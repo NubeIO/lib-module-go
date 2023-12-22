@@ -2,7 +2,12 @@ package module
 
 import (
 	"encoding/json"
+	"github.com/NubeIO/lib-date/datelib"
 	"github.com/NubeIO/lib-module-go/nhttp"
+	"github.com/NubeIO/lib-networking/networking"
+	"github.com/NubeIO/lib-networking/scanner"
+	systats "github.com/NubeIO/lib-system"
+	"github.com/NubeIO/lib-system/ostats"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/dto"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
@@ -152,6 +157,19 @@ type Marshaller interface {
 	CreateTicketComment(body *model.TicketComment, opts ...*Opts) (*model.TicketComment, error)
 	UpdateTicketComment(uuid string, body *model.TicketComment, opts ...*Opts) (*model.TicketComment, error)
 	DeleteTicketComment(uuid string, opts ...*Opts) error
+
+	RunScanner(body *dto.Scanner, opts ...*Opts) (*scanner.Hosts, error)
+	RebootHost(opts ...*Opts) error
+	GetDeviceInfo(opts ...*Opts) (*dto.DeviceInfo, error)
+	GetNetworkInterfaces(opts ...*Opts) ([]*networking.NetworkInterfaces, error)
+	HostTime(opts ...*Opts) (*datelib.Time, error)
+	GetSystem(opts ...*Opts) (*systats.System, error)
+	GetMemoryUsage(opts ...*Opts) (*dto.MemoryUsage, error)
+	GetMemory(opts ...*Opts) (*systats.Memory, error)
+	GetTopProcesses(opts ...*Opts) ([]*systats.Process, error)
+	GetSwap(opts ...*Opts) (*systats.Swap, error)
+	DiscUsage(opts ...*Opts) ([]*ostats.MountingPoint, error)
+	DiscUsagePretty(opts ...*Opts) ([]*dto.Disk, error)
 
 	GetHistoriesForPostgresSync(lastSyncId int, opts ...*Opts) ([]*model.History, error)
 	GetPointsForPostgresSync(opts ...*Opts) ([]*model.PointForPostgresSync, error)
