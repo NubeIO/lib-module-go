@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-module-go/nhttp"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
+	"strconv"
 )
 
 func (g *GRPCMarshaller) CreateDevice(body *model.Device, opts ...*Opts) (*model.Device, error) {
@@ -77,6 +78,15 @@ func (g *GRPCMarshaller) GetOneDeviceByArgs(opts ...*Opts) (*model.Device, error
 	return device, nil
 }
 
+func (g *GRPCMarshaller) CountDevices(opts ...*Opts) (int, error) {
+	api := fmt.Sprintf("/api/devices/count")
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
+	if err != nil {
+		return 0, err
+	}
+	return strconv.Atoi(string(res))
+}
+
 func (g *GRPCMarshaller) UpdateDevice(uuid string, body *model.Device, opts ...*Opts) (*model.Device, error) {
 	api := fmt.Sprintf("/api/devices/%s", uuid)
 	res, err := g.CallDBHelperWithParser(nhttp.PATCH, api, body, opts...)
@@ -113,14 +123,38 @@ func (g *GRPCMarshaller) UpdateDeviceDescendantsErrors(deviceUUID, message, mess
 	return err
 }
 
-func (g *GRPCMarshaller) ClearDeviceDescendantsErrors(deviceUUID string, opts ...*Opts) error {
-	api := fmt.Sprintf("/api/devices/%s/error/descendants", deviceUUID)
-	_, err := g.DbHelper.CallDBHelper(nhttp.DELETE, api, nil, opts...)
+func (g *GRPCMarshaller) UpsertDeviceMetaTags(uuid string, body []*model.DeviceMetaTag, opts ...*Opts) error {
+	api := fmt.Sprintf("/api/devices/%s/meta-tags", uuid)
+	_, err := g.CallDBHelperWithParser(nhttp.PUT, api, body, opts...)
+	return err
+}
+
+func (g *GRPCMarshaller) UpsertDeviceTags(uuid string, body []*model.Tag, opts ...*Opts) error {
+	api := fmt.Sprintf("/api/devices/%s/tags", uuid)
+	_, err := g.CallDBHelperWithParser(nhttp.PUT, api, body, opts...)
 	return err
 }
 
 func (g *GRPCMarshaller) DeleteDevice(uuid string, opts ...*Opts) error {
 	api := fmt.Sprintf("/api/devices/%s", uuid)
+	_, err := g.DbHelper.CallDBHelper(nhttp.DELETE, api, nil, opts...)
+	return err
+}
+
+func (g *GRPCMarshaller) DeleteOneDeviceByArgs(opts ...*Opts) error {
+	api := "/api/devices/one/args"
+	_, err := g.DbHelper.CallDBHelper(nhttp.DELETE, api, nil, opts...)
+	return err
+}
+
+func (g *GRPCMarshaller) DeleteDeviceByName(name string, opts ...*Opts) error {
+	api := fmt.Sprintf("/api/devices/name/%s", name)
+	_, err := g.DbHelper.CallDBHelper(nhttp.DELETE, api, nil, opts...)
+	return err
+}
+
+func (g *GRPCMarshaller) ClearDeviceDescendantsErrors(deviceUUID string, opts ...*Opts) error {
+	api := fmt.Sprintf("/api/devices/%s/error/descendants", deviceUUID)
 	_, err := g.DbHelper.CallDBHelper(nhttp.DELETE, api, nil, opts...)
 	return err
 }

@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/NubeIO/lib-module-go/nhttp"
+	"github.com/NubeIO/nubeio-rubix-lib-models-go/dto"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
 )
 
-func (g *GRPCMarshaller) CreateBulkHistory(histories []*model.History, opts ...*Opts) (bool, error) {
+func (g *GRPCMarshaller) CreateHistories(histories []*model.History, opts ...*Opts) (bool, error) {
 	api := "/api/histories"
 	_, err := g.CallDBHelperWithParser(nhttp.POST, api, histories, opts...)
 	if err != nil {
@@ -16,17 +17,22 @@ func (g *GRPCMarshaller) CreateBulkHistory(histories []*model.History, opts ...*
 	return true, nil
 }
 
-func (g *GRPCMarshaller) CreateBulkPointHistory(histories []*model.PointHistory, opts ...*Opts) (bool, error) {
-	api := "/api/histories/points"
-	_, err := g.CallDBHelperWithParser(nhttp.POST, api, histories, opts...)
+func (g *GRPCMarshaller) GetHistories(historyRequest *dto.HistoryRequest, opts ...*Opts) (*dto.HistoryResponse, error) {
+	api := "/api/histories"
+	res, err := g.CallDBHelperWithParser(nhttp.GET, api, historyRequest, opts...)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
-	return true, nil
+	var history *dto.HistoryResponse
+	err = json.Unmarshal(res, &history)
+	if err != nil {
+		return nil, err
+	}
+	return history, nil
 }
 
 func (g *GRPCMarshaller) GetLatestHistoryByHostAndPointUUID(hostUUID, pointUUID string, opts ...*Opts) (*model.History, error) {
-	api := fmt.Sprintf("/api/histories/points/point-uuid/%s/host-uuid/%s/latest", pointUUID, hostUUID)
+	api := fmt.Sprintf("/api/histories/point-uuid/%s/host-uuid/%s/latest", pointUUID, hostUUID)
 	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
@@ -39,16 +45,9 @@ func (g *GRPCMarshaller) GetLatestHistoryByHostAndPointUUID(hostUUID, pointUUID 
 	return history, nil
 }
 
-func (g *GRPCMarshaller) GetPointHistoriesMissingTimestamps(pointUUID string, opts ...*Opts) ([]string, error) {
-	api := fmt.Sprintf("/api/histories/points/point-uuid/%s/missing-timestamps", pointUUID)
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
-	if err != nil {
-		return nil, err
-	}
-	var missingTimestamps []string
-	err = json.Unmarshal(res, &missingTimestamps)
-	if err != nil {
-		return nil, err
-	}
-	return missingTimestamps, nil
+// DeleteHistories required: opts[0].Args.TimestampLt
+func (g *GRPCMarshaller) DeleteHistories(opts ...*Opts) error {
+	api := "/api/histories"
+	_, err := g.DbHelper.CallDBHelper(nhttp.DELETE, api, nil, opts...)
+	return err
 }

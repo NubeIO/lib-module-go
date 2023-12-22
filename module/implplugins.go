@@ -7,18 +7,32 @@ import (
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
 )
 
-func (g *GRPCMarshaller) GetPlugin(pluginUUID string, opts ...*Opts) (*model.Plugin, error) {
-	api := fmt.Sprintf("/api/plugins/%s", pluginUUID)
+func (g *GRPCMarshaller) GetPlugins(opts ...*Opts) ([]*model.Plugin, error) {
+	api := "/api/plugins"
 	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
-	var pluginConf *model.Plugin
-	err = json.Unmarshal(res, &pluginConf)
+	var plugins []*model.Plugin
+	err = json.Unmarshal(res, &plugins)
 	if err != nil {
 		return nil, err
 	}
-	return pluginConf, nil
+	return plugins, nil
+}
+
+func (g *GRPCMarshaller) GetPlugin(uuid string, opts ...*Opts) (*model.Plugin, error) {
+	api := fmt.Sprintf("/api/plugins/%s", uuid)
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
+	if err != nil {
+		return nil, err
+	}
+	var plugin *model.Plugin
+	err = json.Unmarshal(res, &plugin)
+	if err != nil {
+		return nil, err
+	}
+	return plugin, nil
 }
 
 func (g *GRPCMarshaller) GetPluginByName(name string, opts ...*Opts) (*model.Plugin, error) {
@@ -27,12 +41,12 @@ func (g *GRPCMarshaller) GetPluginByName(name string, opts ...*Opts) (*model.Plu
 	if err != nil {
 		return nil, err
 	}
-	var pluginConf *model.Plugin
-	err = json.Unmarshal(res, &pluginConf)
+	var plugin *model.Plugin
+	err = json.Unmarshal(res, &plugin)
 	if err != nil {
 		return nil, err
 	}
-	return pluginConf, nil
+	return plugin, nil
 }
 
 func (g *GRPCMarshaller) CreateModuleDir(name string, opts ...*Opts) (*string, error) {
