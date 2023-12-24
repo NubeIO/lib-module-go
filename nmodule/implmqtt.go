@@ -1,4 +1,4 @@
-package module
+package nmodule
 
 import (
 	"github.com/NubeIO/lib-module-go/nhttp"

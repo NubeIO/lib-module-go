@@ -2,8 +2,8 @@ package router
 
 import (
 	"fmt"
-	"github.com/NubeIO/lib-module-go/module"
 	"github.com/NubeIO/lib-module-go/nhttp"
+	"github.com/NubeIO/lib-module-go/nmodule"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"testing"
@@ -14,7 +14,7 @@ func TestRoutingOrder(t *testing.T) {
 	router.Handle(nhttp.GET, "/api/test", GetTestHandler)
 	router.Handle(nhttp.GET, "/api/:id", GetIdHandler)
 
-	var m *module.Module
+	var m *nmodule.Module
 	headers := http.Header{}
 	headers["Authorization"] = []string{"Bearer abc"}
 	res, _ := router.CallHandler(m, nhttp.GET, "/api/test?abc=test", headers, nil)
@@ -29,7 +29,7 @@ func TestRoutingWildcard(t *testing.T) {
 	router.Handle(nhttp.GET, "/api/test", GetTestHandler)
 	router.Handle(nhttp.GET, "/api/*", GetProxyHandler)
 
-	var m *module.Module
+	var m *nmodule.Module
 	res, _ := router.CallHandler(m, nhttp.GET, "/api/test", nil, nil)
 	assert.Equal(t, []byte("Hello, this is the GET: /api/test!"), res)
 
@@ -44,7 +44,7 @@ func TestRouter(t *testing.T) {
 	router.Handle(nhttp.GET, "/api/:id/test", GetIdTestHandler)
 	router.Handle(nhttp.POST, "/api/test", PostTestHandler)
 
-	var m *module.Module
+	var m *nmodule.Module
 	res, _ := router.CallHandler(m, nhttp.GET, "/api/test", nil, nil)
 	assert.Equal(t, []byte("Hello, this is the GET: /api/test!"), res)
 
@@ -58,17 +58,17 @@ func TestRouter(t *testing.T) {
 	assert.Equal(t, []byte("Hello, this is the GET: /api/:id/test with id: abc!"), res)
 }
 
-func GetTestHandler(m *module.Module, r *Request) ([]byte, error) {
+func GetTestHandler(m *nmodule.Module, r *Request) ([]byte, error) {
 	fmt.Printf("Query params: abc = %s\n", r.QueryParams.Get("abc"))
 	fmt.Printf("Header Authorization = %s\n", r.Headers.Get("Authorization"))
 	return []byte(fmt.Sprintf("Hello, this is the GET: %s!", r.Path)), nil
 }
 
-func PostTestHandler(m *module.Module, r *Request) ([]byte, error) {
+func PostTestHandler(m *nmodule.Module, r *Request) ([]byte, error) {
 	return []byte(fmt.Sprintf("Hello, this is the POST: %s!", r.Path)), nil
 }
 
-func GetIdHandler(m *module.Module, r *Request) ([]byte, error) {
+func GetIdHandler(m *nmodule.Module, r *Request) ([]byte, error) {
 	if id, ok := r.PathParams["id"]; ok {
 		message := fmt.Sprintf("Hello, this is the GET: %s with id: %s!", r.Pattern, id)
 		return []byte(message), nil
@@ -76,7 +76,7 @@ func GetIdHandler(m *module.Module, r *Request) ([]byte, error) {
 	return nil, fmt.Errorf("missing id parameter")
 }
 
-func GetIdTestHandler(m *module.Module, r *Request) ([]byte, error) {
+func GetIdTestHandler(m *nmodule.Module, r *Request) ([]byte, error) {
 	if id, ok := r.PathParams["id"]; ok {
 		message := fmt.Sprintf("Hello, this is the GET: %s with id: %s!", r.Pattern, id)
 		return []byte(message), nil
@@ -84,6 +84,6 @@ func GetIdTestHandler(m *module.Module, r *Request) ([]byte, error) {
 	return nil, fmt.Errorf("missing id parameter")
 }
 
-func GetProxyHandler(m *module.Module, r *Request) ([]byte, error) {
+func GetProxyHandler(m *nmodule.Module, r *Request) ([]byte, error) {
 	return []byte(fmt.Sprintf("Hello, this is the GET: %s proxy!", r.Path)), nil
 }

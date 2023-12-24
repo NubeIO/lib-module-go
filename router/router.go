@@ -2,8 +2,8 @@ package router
 
 import (
 	"fmt"
-	"github.com/NubeIO/lib-module-go/module"
 	"github.com/NubeIO/lib-module-go/nhttp"
+	"github.com/NubeIO/lib-module-go/nmodule"
 	"net/http"
 	"net/url"
 	"sort"
@@ -20,7 +20,7 @@ type Request struct {
 }
 
 // HandlerFunc defines the type for request handlers
-type HandlerFunc func(*module.Module, *Request) ([]byte, error)
+type HandlerFunc func(*nmodule.Module, *Request) ([]byte, error)
 
 // Router is a simple router that maps URL patterns to handlers
 type Router struct {
@@ -91,7 +91,7 @@ func (router *Router) Handle(method nhttp.Method, pattern string, handler Handle
 	router.routes[pattern][method] = handler
 }
 
-func (router *Router) CallHandler(module *module.Module, method nhttp.Method, urlString string, headers http.Header, body []byte) ([]byte, error) {
+func (router *Router) CallHandler(module *nmodule.Module, method nhttp.Method, urlString string, headers http.Header, body []byte) ([]byte, error) {
 	parsedURL, err := url.Parse(urlString)
 	if err != nil {
 		return nil, err
