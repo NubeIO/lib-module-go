@@ -2,27 +2,29 @@ package router
 
 import (
 	"fmt"
-	"github.com/NubeIO/lib-module-go/http"
-	"github.com/NubeIO/lib-module-go/module"
-	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
+	"github.com/NubeIO/lib-module-go/nhttp"
+	"github.com/NubeIO/lib-module-go/nmodule"
+	"net/http"
+	"net/url"
 	"sort"
 	"strings"
 )
 
 type Request struct {
-	Path    string
-	Pattern string
-	Params  map[string]string
-	Args    nargs.Args
-	Body    []byte
+	Path        string
+	Pattern     string
+	PathParams  map[string]string
+	QueryParams url.Values
+	Headers     http.Header
+	Body        []byte
 }
 
 // HandlerFunc defines the type for request handlers
-type HandlerFunc func(*module.Module, *Request) ([]byte, error)
+type HandlerFunc func(*nmodule.Module, *Request) ([]byte, error)
 
 // Router is a simple router that maps URL patterns to handlers
 type Router struct {
-	routes          map[string]map[http.Method]HandlerFunc
+	routes          map[string]map[nhttp.Method]HandlerFunc
 	orderedPatterns []string
 	needsReorder    bool
 }
@@ -30,7 +32,7 @@ type Router struct {
 // NewRouter creates a new Router instance
 func NewRouter() *Router {
 	return &Router{
-		routes: make(map[string]map[http.Method]HandlerFunc),
+		routes: make(map[string]map[nhttp.Method]HandlerFunc),
 	}
 }
 
@@ -82,31 +84,36 @@ func containsDynamicSegments(pattern string) bool {
 }
 
 // Handle registers a handler for a specific pattern and HTTP method
-func (router *Router) Handle(method http.Method, pattern string, handler HandlerFunc) {
+func (router *Router) Handle(method nhttp.Method, pattern string, handler HandlerFunc) {
 	if _, exists := router.routes[pattern]; !exists {
-		router.routes[pattern] = make(map[http.Method]HandlerFunc)
+		router.routes[pattern] = make(map[nhttp.Method]HandlerFunc)
 	}
 	router.routes[pattern][method] = handler
 }
 
-func (router *Router) CallHandler(module *module.Module, method http.Method, path string, args nargs.Args, body []byte) ([]byte, error) {
+func (router *Router) CallHandler(module *nmodule.Module, method nhttp.Method, urlString string, headers http.Header, body []byte) ([]byte, error) {
+	parsedURL, err := url.Parse(urlString)
+	if err != nil {
+		return nil, err
+	}
 	orderedPatterns := router.OrderPatterns()
 	for _, pattern := range orderedPatterns {
-		if params, ok := match(pattern, path); ok {
+		if params, ok := match(pattern, parsedURL.Path); ok {
 			if handlers, exists := router.routes[pattern]; exists {
 				if handler, exists := handlers[method]; exists {
 					return handler(module, &Request{
-						Path:    path,
-						Pattern: pattern,
-						Params:  params,
-						Args:    args,
-						Body:    body,
+						Path:        parsedURL.Path,
+						Pattern:     pattern,
+						PathParams:  params,
+						QueryParams: parsedURL.Query(),
+						Headers:     headers,
+						Body:        body,
 					})
 				}
 			}
 		}
 	}
-	return nil, fmt.Errorf("handler not found for %s: %s", method, path)
+	return nil, fmt.Errorf("handler not found for %s: %s", method, urlString)
 }
 
 // match checks if the given pattern matches the request path and extracts parameters

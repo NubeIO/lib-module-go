@@ -1,12 +1,12 @@
-package module
+package nmodule
 
 import (
 	"context"
-	"github.com/NubeIO/lib-module-go/http"
+	"github.com/NubeIO/lib-module-go/nhttp"
 	"github.com/NubeIO/lib-module-go/proto"
-	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 	"github.com/hashicorp/go-plugin"
 	"google.golang.org/grpc"
+	"net/http"
 )
 
 var HandshakeConfig = plugin.HandshakeConfig{
@@ -16,7 +16,7 @@ var HandshakeConfig = plugin.HandshakeConfig{
 }
 
 type DBHelper interface {
-	CallDBHelper(method http.Method, api string, args nargs.Args, body []byte) ([]byte, error)
+	CallDBHelper(method nhttp.Method, api string, body []byte, opts ...*Opts) ([]byte, error)
 }
 
 type Info struct {
@@ -34,7 +34,7 @@ type Module interface {
 	Enable() error
 	Disable() error
 	GetInfo() (*Info, error)
-	CallModule(method http.Method, api string, args nargs.Args, body []byte) ([]byte, error)
+	CallModule(method nhttp.Method, urlString string, headers http.Header, body []byte) ([]byte, error)
 }
 
 // NubeModule is the implementation of plugin.Plugin so we can serve/consume this.

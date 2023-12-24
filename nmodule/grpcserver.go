@@ -1,14 +1,13 @@
-package module
+package nmodule
 
 import (
 	"context"
-	"errors"
-	"github.com/NubeIO/lib-module-go/http"
-	"github.com/NubeIO/lib-module-go/parser"
+	"github.com/NubeIO/lib-module-go/nhttp"
 	"github.com/NubeIO/lib-module-go/proto"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 	"github.com/hashicorp/go-plugin"
 	log "github.com/sirupsen/logrus"
+	"net/http"
 )
 
 // Here is the RPC server that RPCClient talks to, conforming to
@@ -79,44 +78,59 @@ func (m *GRPCServer) GetInfo(ctx context.Context, req *proto.Empty) (*proto.Info
 	}, nil
 }
 
-func (m *GRPCServer) CallModule(ctx context.Context, req *proto.Request) (*proto.Response, error) {
+func ConvertHeadersToHTTP(protoHeaders []*proto.Header) http.Header {
+	headers := make(http.Header)
+	for _, protoHeader := range protoHeaders {
+		for _, value := range protoHeader.Values {
+			headers.Add(protoHeader.Key, value)
+		}
+	}
+	return headers
+}
+
+func (m *GRPCServer) CallModule(ctx context.Context, req *proto.RequestModule) (*proto.Response, error) {
 	log.Debug("gRPC CallModule server has been called...") // when server calls it, it lands second (it is in module)
-	method, err := http.StringToMethod(req.Method)
+	method, err := nhttp.StringToMethod(req.Method)
 	if err != nil {
 		return nil, err
 	}
-	apiArgs, err := parser.DeserializeArgs(req.Args)
 	if err != nil {
 		return nil, err
 	}
-	r, err := m.Impl.CallModule(method, req.Api, *apiArgs, req.Body)
+	r, err := m.Impl.CallModule(method, req.UrlString, ConvertHeadersToHTTP(req.Headers), req.Body)
 	if err != nil {
 		return nil, err
 	}
 	return &proto.Response{R: r}, nil
 }
 
-// GRPCDBHelperClient is an implementation of DBHelper that talks over RPC.
-type GRPCDBHelperClient struct{ client proto.DBHelperClient }
+// GRPCDBHelperServer is the gRPC server that GRPCDBHelperClient talks to.
+type GRPCDBHelperServer struct {
+	// This is the real implementation
+	Impl DBHelper
+}
 
-func (m *GRPCDBHelperClient) CallDBHelper(method http.Method, api string, args nargs.Args, body []byte) ([]byte, error) {
-	// This should call at first from module
-	apiArgs, err := parser.SerializeArgs(args)
+func (m *GRPCDBHelperServer) CallDBHelper(ctx context.Context, req *proto.Request) (resp *proto.Response, err error) {
+	method, err := nhttp.StringToMethod(req.Method)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := m.client.CallDBHelper(context.Background(), &proto.Request{
-		Method: string(method),
-		Api:    api,
-		Args:   *apiArgs,
-		Body:   body,
-	})
+	var apiArgs *nargs.Args
+	if req.Args != nil {
+		apiArgs, err = nargs.DeserializeArgs(*req.Args)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	var r []byte
+	if req.HostUUID != nil {
+		r, err = m.Impl.CallDBHelper(method, req.Api, req.Body, &Opts{Args: apiArgs, HostUUID: req.HostUUID})
+	} else {
+		r, err = m.Impl.CallDBHelper(method, req.Api, req.Body)
+	}
 	if err != nil {
-		return nil, err
+		return &proto.Response{R: nil, E: []byte(err.Error())}, nil
 	}
-	if resp.E != nil {
-		errStr := string(resp.E)
-		return nil, errors.New(errStr)
-	}
-	return resp.R, nil
+	return &proto.Response{R: r, E: nil}, nil
 }

@@ -39,7 +39,7 @@ type ModuleClient interface {
 	Enable(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
 	Disable(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
 	GetInfo(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*InfoResponse, error)
-	CallModule(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+	CallModule(ctx context.Context, in *RequestModule, opts ...grpc.CallOption) (*Response, error)
 }
 
 type moduleClient struct {
@@ -95,7 +95,7 @@ func (c *moduleClient) GetInfo(ctx context.Context, in *Empty, opts ...grpc.Call
 	return out, nil
 }
 
-func (c *moduleClient) CallModule(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+func (c *moduleClient) CallModule(ctx context.Context, in *RequestModule, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, Module_CallModule_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -113,7 +113,7 @@ type ModuleServer interface {
 	Enable(context.Context, *Empty) (*Empty, error)
 	Disable(context.Context, *Empty) (*Empty, error)
 	GetInfo(context.Context, *Empty) (*InfoResponse, error)
-	CallModule(context.Context, *Request) (*Response, error)
+	CallModule(context.Context, *RequestModule) (*Response, error)
 }
 
 // UnimplementedModuleServer should be embedded to have forward compatible implementations.
@@ -135,7 +135,7 @@ func (UnimplementedModuleServer) Disable(context.Context, *Empty) (*Empty, error
 func (UnimplementedModuleServer) GetInfo(context.Context, *Empty) (*InfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetInfo not implemented")
 }
-func (UnimplementedModuleServer) CallModule(context.Context, *Request) (*Response, error) {
+func (UnimplementedModuleServer) CallModule(context.Context, *RequestModule) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CallModule not implemented")
 }
 
@@ -241,7 +241,7 @@ func _Module_GetInfo_Handler(srv interface{}, ctx context.Context, dec func(inte
 }
 
 func _Module_CallModule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
+	in := new(RequestModule)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -253,7 +253,7 @@ func _Module_CallModule_Handler(srv interface{}, ctx context.Context, dec func(i
 		FullMethod: Module_CallModule_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ModuleServer).CallModule(ctx, req.(*Request))
+		return srv.(ModuleServer).CallModule(ctx, req.(*RequestModule))
 	}
 	return interceptor(ctx, in, info, handler)
 }
