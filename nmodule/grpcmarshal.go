@@ -8,6 +8,7 @@ import (
 	"github.com/NubeIO/lib-networking/scanner"
 	systats "github.com/NubeIO/lib-system"
 	"github.com/NubeIO/lib-system/ostats"
+	"github.com/NubeIO/nubeio-rubix-lib-models-go/datatype"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/dto"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
@@ -185,8 +186,8 @@ type Marshaller interface {
 	GetHistoryLogByHostUUID(hostUUID string, opts ...*Opts) (*model.HistoryLog, error)
 	UpdateBulkHistoryLogs(logs []*model.HistoryLog, opts ...*Opts) (bool, error)
 
-	Publish(topic string, qos model.QOS, retain bool, payload string, opts ...*Opts) error
-	PublishNonBuffer(topic string, qos model.QOS, retain bool, payload string, opts ...*Opts) error
+	Publish(topic string, qos datatype.QOS, retain bool, payload string, opts ...*Opts) error
+	PublishNonBuffer(topic string, qos datatype.QOS, retain bool, payload string, opts ...*Opts) error
 }
 
 func New(dbHelper DBHelper) *GRPCMarshaller {

@@ -2,10 +2,11 @@ package nmodule
 
 import (
 	"github.com/NubeIO/lib-module-go/nhttp"
+	"github.com/NubeIO/nubeio-rubix-lib-models-go/datatype"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
 )
 
-func (g *GRPCMarshaller) Publish(topic string, qos model.QOS, retain bool, payload string, opts ...*Opts) error {
+func (g *GRPCMarshaller) Publish(topic string, qos datatype.QOS, retain bool, payload string, opts ...*Opts) error {
 	api := "/api/mqtt/publish"
 	body := model.MqttBody{
 		Topic:   topic,
@@ -18,7 +19,7 @@ func (g *GRPCMarshaller) Publish(topic string, qos model.QOS, retain bool, paylo
 	return err
 }
 
-func (g *GRPCMarshaller) PublishNonBuffer(topic string, qos model.QOS, retain bool, payload string, opts ...*Opts) error {
+func (g *GRPCMarshaller) PublishNonBuffer(topic string, qos datatype.QOS, retain bool, payload string, opts ...*Opts) error {
 	api := "/api/mqtt/publish-non-buffer"
 	body := model.MqttBody{
 		Topic:   topic,
