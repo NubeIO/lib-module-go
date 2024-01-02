@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/NubeIO/lib-module-go/nhttp"
+	"github.com/NubeIO/nubeio-rubix-lib-models-go/dto"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
 	"strconv"
 )
@@ -79,13 +80,13 @@ func (g *GRPCMarshaller) GetOnePointByArgs(opts ...*Opts) (*model.Point, error) 
 	return point, nil
 }
 
-func (g *GRPCMarshaller) GetPointWithParent(uuid string, opts ...*Opts) (*model.PointWithParent, error) {
+func (g *GRPCMarshaller) GetPointWithParent(uuid string, opts ...*Opts) (*dto.PointWithParent, error) {
 	api := fmt.Sprintf("/api/points/%s/with-parents", uuid)
 	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
-	var pointWithParent *model.PointWithParent
+	var pointWithParent *dto.PointWithParent
 	err = json.Unmarshal(res, &pointWithParent)
 	if err != nil {
 		return nil, err
@@ -93,13 +94,13 @@ func (g *GRPCMarshaller) GetPointWithParent(uuid string, opts ...*Opts) (*model.
 	return pointWithParent, nil
 }
 
-func (g *GRPCMarshaller) GetPointWithParentByName(networkName, deviceName, pointName string, opts ...*Opts) (*model.PointWithParent, error) {
+func (g *GRPCMarshaller) GetPointWithParentByName(networkName, deviceName, pointName string, opts ...*Opts) (*dto.PointWithParent, error) {
 	api := fmt.Sprintf("/api/points//name/%s/%s/%s/with-parents", networkName, deviceName, pointName)
 	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
-	var pointWithParent *model.PointWithParent
+	var pointWithParent *dto.PointWithParent
 	err = json.Unmarshal(res, &pointWithParent)
 	if err != nil {
 		return nil, err
@@ -130,10 +131,10 @@ func (g *GRPCMarshaller) UpdatePoint(uuid string, body *model.Point, opts ...*Op
 	return point, nil
 }
 
-func (g *GRPCMarshaller) PointWrite(uuid string, body *model.PointWriter, opts ...*Opts) (*model.PointWriteResponse, error) {
+func (g *GRPCMarshaller) PointWrite(uuid string, body *dto.PointWriter, opts ...*Opts) (*dto.PointWriteResponse, error) {
 	api := fmt.Sprintf("/api/points/%s/write", uuid)
 	res, err := g.CallDBHelperWithParser(nhttp.PATCH, api, body, opts...)
-	var pwr *model.PointWriteResponse
+	var pwr *dto.PointWriteResponse
 	err = json.Unmarshal(res, &pwr)
 	if err != nil {
 		return nil, err
@@ -141,10 +142,10 @@ func (g *GRPCMarshaller) PointWrite(uuid string, body *model.PointWriter, opts .
 	return pwr, nil
 }
 
-func (g *GRPCMarshaller) PointWriteByName(networkName, deviceName, pointName string, body *model.PointWriter, opts ...*Opts) (*model.PointWriteResponse, error) {
+func (g *GRPCMarshaller) PointWriteByName(networkName, deviceName, pointName string, body *dto.PointWriter, opts ...*Opts) (*dto.PointWriteResponse, error) {
 	api := fmt.Sprintf("/api/points/name/%s/%s/%s/write", networkName, deviceName, pointName)
 	res, err := g.CallDBHelperWithParser(nhttp.PATCH, api, body, opts...)
-	var pwr *model.PointWriteResponse
+	var pwr *dto.PointWriteResponse
 	err = json.Unmarshal(res, &pwr)
 	if err != nil {
 		return nil, err

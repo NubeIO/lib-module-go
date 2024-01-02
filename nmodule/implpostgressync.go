@@ -3,6 +3,7 @@ package nmodule
 import (
 	"encoding/json"
 	"github.com/NubeIO/lib-module-go/nhttp"
+	"github.com/NubeIO/nubeio-rubix-lib-models-go/dto"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 	"strconv"
@@ -28,13 +29,13 @@ func (g *GRPCMarshaller) GetHistoriesForPostgresSync(lastSyncId int, opts ...*Op
 	return history, nil
 }
 
-func (g *GRPCMarshaller) GetPointsForPostgresSync(opts ...*Opts) ([]*model.PointForPostgresSync, error) {
+func (g *GRPCMarshaller) GetPointsForPostgresSync(opts ...*Opts) ([]*dto.PointForPostgresSync, error) {
 	api := "/api/postgres-sync/points"
 	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
-	var r []*model.PointForPostgresSync
+	var r []*dto.PointForPostgresSync
 	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return nil, err
@@ -42,13 +43,13 @@ func (g *GRPCMarshaller) GetPointsForPostgresSync(opts ...*Opts) ([]*model.Point
 	return r, nil
 }
 
-func (g *GRPCMarshaller) GetNetworksTagsForPostgresSync(opts ...*Opts) ([]*model.NetworkTagForPostgresSync, error) {
+func (g *GRPCMarshaller) GetNetworksTagsForPostgresSync(opts ...*Opts) ([]*dto.NetworkTagForPostgresSync, error) {
 	api := "/api/postgres-sync/networks-tags"
 	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
-	var r []*model.NetworkTagForPostgresSync
+	var r []*dto.NetworkTagForPostgresSync
 	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return nil, err
@@ -56,13 +57,13 @@ func (g *GRPCMarshaller) GetNetworksTagsForPostgresSync(opts ...*Opts) ([]*model
 	return r, nil
 }
 
-func (g *GRPCMarshaller) GetDevicesTagsForPostgresSync(opts ...*Opts) ([]*model.DeviceTagForPostgresSync, error) {
+func (g *GRPCMarshaller) GetDevicesTagsForPostgresSync(opts ...*Opts) ([]*dto.DeviceTagForPostgresSync, error) {
 	api := "/api/postgres-sync/devices-tags"
 	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
-	var r []*model.DeviceTagForPostgresSync
+	var r []*dto.DeviceTagForPostgresSync
 	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return nil, err
@@ -70,13 +71,13 @@ func (g *GRPCMarshaller) GetDevicesTagsForPostgresSync(opts ...*Opts) ([]*model.
 	return r, nil
 }
 
-func (g *GRPCMarshaller) GetPointsTagsForPostgresSync(opts ...*Opts) ([]*model.PointTagForPostgresSync, error) {
+func (g *GRPCMarshaller) GetPointsTagsForPostgresSync(opts ...*Opts) ([]*dto.PointTagForPostgresSync, error) {
 	api := "/api/postgres_sync/points-tags"
 	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
-	var r []*model.PointTagForPostgresSync
+	var r []*dto.PointTagForPostgresSync
 	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return nil, err
