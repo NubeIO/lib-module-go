@@ -8,6 +8,7 @@ import (
 	"github.com/NubeIO/lib-networking/scanner"
 	systats "github.com/NubeIO/lib-system"
 	"github.com/NubeIO/lib-system/ostats"
+	"github.com/NubeIO/nubeio-rubix-lib-models-go/datatype"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/dto"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
@@ -60,12 +61,12 @@ type Marshaller interface {
 	GetPoint(uuid string, opts ...*Opts) (*model.Point, error)
 	GetPointByName(networkName, deviceName, pointName string, opts ...*Opts) (*model.Point, error)
 	GetOnePointByArgs(opts ...*Opts) (*model.Point, error)
-	GetPointWithParent(uuid string, opts ...*Opts) (*model.PointWithParent, error)
-	GetPointWithParentByName(networkName, deviceName, pointName string, opts ...*Opts) (*model.PointWithParent, error)
+	GetPointWithParent(uuid string, opts ...*Opts) (*dto.PointWithParent, error)
+	GetPointWithParentByName(networkName, deviceName, pointName string, opts ...*Opts) (*dto.PointWithParent, error)
 	CountPoints(opts ...*Opts) (int, error)
 	UpdatePoint(uuid string, body *model.Point, opts ...*Opts) (*model.Point, error)
-	PointWrite(uuid string, body *model.PointWriter, opts ...*Opts) (*model.PointWriteResponse, error)
-	PointWriteByName(networkName, deviceName, pointName string, body *model.PointWriter, opts ...*Opts) (*model.PointWriteResponse, error)
+	PointWrite(uuid string, body *dto.PointWriter, opts ...*Opts) (*dto.PointWriteResponse, error)
+	PointWriteByName(networkName, deviceName, pointName string, body *dto.PointWriter, opts ...*Opts) (*dto.PointWriteResponse, error)
 	UpdatePointErrors(uuid string, body *model.Point, opts ...*Opts) error
 	UpdatePointSuccess(uuid string, body *model.Point, opts ...*Opts) error
 	UpsertPoint(uuid string, body *model.Point, opts ...*Opts) (*model.Point, error)
@@ -80,7 +81,7 @@ type Marshaller interface {
 	GetSchedule(uuid string, opts ...*Opts) (*model.Schedule, error)
 	GetOneScheduleByArgs(opts ...*Opts) (*model.Schedule, error)
 	UpdateSchedule(uuid string, body *model.Schedule, opts ...*Opts) (*model.Schedule, error)
-	ScheduleWrite(uuid string, body *model.ScheduleData, opts ...*Opts) (*model.ScheduleData, error)
+	ScheduleWrite(uuid string, body *dto.ScheduleData, opts ...*Opts) (*dto.ScheduleData, error)
 	UpdateScheduleAllProps(uuid string, body *model.Schedule, opts ...*Opts) (*model.Schedule, error)
 	DeleteSchedule(uuid string, opts ...*Opts) error
 
@@ -172,10 +173,10 @@ type Marshaller interface {
 	DiscUsagePretty(opts ...*Opts) ([]*dto.Disk, error)
 
 	GetHistoriesForPostgresSync(lastSyncId int, opts ...*Opts) ([]*model.History, error)
-	GetPointsForPostgresSync(opts ...*Opts) ([]*model.PointForPostgresSync, error)
-	GetNetworksTagsForPostgresSync(opts ...*Opts) ([]*model.NetworkTagForPostgresSync, error)
-	GetDevicesTagsForPostgresSync(opts ...*Opts) ([]*model.DeviceTagForPostgresSync, error)
-	GetPointsTagsForPostgresSync(opts ...*Opts) ([]*model.PointTagForPostgresSync, error)
+	GetPointsForPostgresSync(opts ...*Opts) ([]*dto.PointForPostgresSync, error)
+	GetNetworksTagsForPostgresSync(opts ...*Opts) ([]*dto.NetworkTagForPostgresSync, error)
+	GetDevicesTagsForPostgresSync(opts ...*Opts) ([]*dto.DeviceTagForPostgresSync, error)
+	GetPointsTagsForPostgresSync(opts ...*Opts) ([]*dto.PointTagForPostgresSync, error)
 	GetNetworksMetaTagsForPostgresSync(opts ...*Opts) ([]*model.NetworkMetaTag, error)
 	GetDevicesMetaTagsForPostgresSync(opts ...*Opts) ([]*model.DeviceMetaTag, error)
 	GetPointsMetaTagsForPostgresSync(opts ...*Opts) ([]*model.PointMetaTag, error)
@@ -185,8 +186,8 @@ type Marshaller interface {
 	GetHistoryLogByHostUUID(hostUUID string, opts ...*Opts) (*model.HistoryLog, error)
 	UpdateBulkHistoryLogs(logs []*model.HistoryLog, opts ...*Opts) (bool, error)
 
-	Publish(topic string, qos model.QOS, retain bool, payload string, opts ...*Opts) error
-	PublishNonBuffer(topic string, qos model.QOS, retain bool, payload string, opts ...*Opts) error
+	Publish(topic string, qos datatype.QOS, retain bool, payload string, opts ...*Opts) error
+	PublishNonBuffer(topic string, qos datatype.QOS, retain bool, payload string, opts ...*Opts) error
 }
 
 func New(dbHelper DBHelper) *GRPCMarshaller {

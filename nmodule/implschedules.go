@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/NubeIO/lib-module-go/nhttp"
+	"github.com/NubeIO/nubeio-rubix-lib-models-go/dto"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
 )
 
@@ -73,13 +74,13 @@ func (g *GRPCMarshaller) UpdateSchedule(uuid string, body *model.Schedule, opts 
 	return schedule, nil
 }
 
-func (g *GRPCMarshaller) ScheduleWrite(uuid string, body *model.ScheduleData, opts ...*Opts) (*model.ScheduleData, error) {
+func (g *GRPCMarshaller) ScheduleWrite(uuid string, body *dto.ScheduleData, opts ...*Opts) (*dto.ScheduleData, error) {
 	api := fmt.Sprintf("/api/schedules/%s/write", uuid)
 	res, err := g.CallDBHelperWithParser(nhttp.PATCH, api, body, opts...)
 	if err != nil {
 		return nil, err
 	}
-	var scheduleData *model.ScheduleData
+	var scheduleData *dto.ScheduleData
 	if err = json.Unmarshal(res, &scheduleData); err != nil {
 		return nil, err
 	}
