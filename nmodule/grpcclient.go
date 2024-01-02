@@ -111,13 +111,15 @@ func (m *GRPCDBHelperClient) CallDBHelper(method nhttp.Method, api string, body 
 	var hostUUID *string
 	var err error
 	if len(opts) > 0 {
-		if opts[0].Args != nil {
-			apiArgs, err = nargs.SerializeArgs(*opts[0].Args)
-			if err != nil {
-				return nil, err
+		if opts[0] != nil {
+			if opts[0].Args != nil {
+				apiArgs, err = nargs.SerializeArgs(*opts[0].Args)
+				if err != nil {
+					return nil, err
+				}
 			}
+			hostUUID = opts[0].HostUUID
 		}
-		hostUUID = opts[0].HostUUID
 	}
 	resp, err := m.client.CallDBHelper(context.Background(), &proto.Request{
 		Method:   string(method),
