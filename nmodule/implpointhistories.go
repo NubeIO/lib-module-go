@@ -72,7 +72,7 @@ func (g *GRPCMarshaller) GetPointHistoriesByPointUUIDs(pointUUIDs []*string, opt
 	return histories, nil
 }
 
-// GetPointHistoriesForSync required: opts[0].Args.Id, opts[0].Args.TimestampLt
+// GetPointHistoriesForSync required: opts[0].Args.Id, opts[0].Args.Timestamp
 func (g *GRPCMarshaller) GetPointHistoriesForSync(opts ...*Opts) ([]*model.PointHistory, error) {
 	api := "/api/histories/points/sync"
 	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
