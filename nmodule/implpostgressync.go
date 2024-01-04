@@ -72,7 +72,7 @@ func (g *GRPCMarshaller) GetDevicesTagsForPostgresSync(opts ...*Opts) ([]*dto.De
 }
 
 func (g *GRPCMarshaller) GetPointsTagsForPostgresSync(opts ...*Opts) ([]*dto.PointTagForPostgresSync, error) {
-	api := "/api/postgres_sync/points-tags"
+	api := "/api/postgres-sync/points-tags"
 	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
@@ -85,13 +85,13 @@ func (g *GRPCMarshaller) GetPointsTagsForPostgresSync(opts ...*Opts) ([]*dto.Poi
 	return r, nil
 }
 
-func (g *GRPCMarshaller) GetNetworksMetaTagsForPostgresSync(opts ...*Opts) ([]*model.NetworkMetaTag, error) {
+func (g *GRPCMarshaller) GetNetworksMetaTagsForPostgresSync(opts ...*Opts) ([]*dto.NetworkMetaTagForPostgresSync, error) {
 	api := "/api/postgres-sync/networks-meta-tags"
 	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
-	var r []*model.NetworkMetaTag
+	var r []*dto.NetworkMetaTagForPostgresSync
 	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return nil, err
@@ -99,13 +99,13 @@ func (g *GRPCMarshaller) GetNetworksMetaTagsForPostgresSync(opts ...*Opts) ([]*m
 	return r, nil
 }
 
-func (g *GRPCMarshaller) GetDevicesMetaTagsForPostgresSync(opts ...*Opts) ([]*model.DeviceMetaTag, error) {
+func (g *GRPCMarshaller) GetDevicesMetaTagsForPostgresSync(opts ...*Opts) ([]*dto.DeviceMetaTagForPostgresSync, error) {
 	api := "/api/postgres-sync/devices-meta-tags"
 	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
-	var r []*model.DeviceMetaTag
+	var r []*dto.DeviceMetaTagForPostgresSync
 	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return nil, err
@@ -113,13 +113,13 @@ func (g *GRPCMarshaller) GetDevicesMetaTagsForPostgresSync(opts ...*Opts) ([]*mo
 	return r, nil
 }
 
-func (g *GRPCMarshaller) GetPointsMetaTagsForPostgresSync(opts ...*Opts) ([]*model.PointMetaTag, error) {
+func (g *GRPCMarshaller) GetPointsMetaTagsForPostgresSync(opts ...*Opts) ([]*dto.PointMetaTagForPostgresSync, error) {
 	api := "/api/postgres-sync/points-meta-tags"
 	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
 	}
-	var r []*model.PointMetaTag
+	var r []*dto.PointMetaTagForPostgresSync
 	err = json.Unmarshal(res, &r)
 	if err != nil {
 		return nil, err

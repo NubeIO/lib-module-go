@@ -177,9 +177,9 @@ type Marshaller interface {
 	GetNetworksTagsForPostgresSync(opts ...*Opts) ([]*dto.NetworkTagForPostgresSync, error)
 	GetDevicesTagsForPostgresSync(opts ...*Opts) ([]*dto.DeviceTagForPostgresSync, error)
 	GetPointsTagsForPostgresSync(opts ...*Opts) ([]*dto.PointTagForPostgresSync, error)
-	GetNetworksMetaTagsForPostgresSync(opts ...*Opts) ([]*model.NetworkMetaTag, error)
-	GetDevicesMetaTagsForPostgresSync(opts ...*Opts) ([]*model.DeviceMetaTag, error)
-	GetPointsMetaTagsForPostgresSync(opts ...*Opts) ([]*model.PointMetaTag, error)
+	GetNetworksMetaTagsForPostgresSync(opts ...*Opts) ([]*dto.NetworkMetaTagForPostgresSync, error)
+	GetDevicesMetaTagsForPostgresSync(opts ...*Opts) ([]*dto.DeviceMetaTagForPostgresSync, error)
+	GetPointsMetaTagsForPostgresSync(opts ...*Opts) ([]*dto.PointMetaTagForPostgresSync, error)
 	GetLastSyncHistoryIdForPostgresSync(opts ...*Opts) (int, error)
 	UpdateLastSyncHistoryRowForPostgresSync(log *model.HistoryPostgresLog, opts ...*Opts) (*model.HistoryPostgresLog, error)
 
