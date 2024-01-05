@@ -124,7 +124,7 @@ func (m *GRPCDBHelperServer) CallDBHelper(ctx context.Context, req *proto.Reques
 	}
 
 	var r []byte
-	if req.HostUUID != nil {
+	if req.HostUUID != nil || req.Args != nil {
 		r, err = m.Impl.CallDBHelper(method, req.Api, req.Body, &Opts{Args: apiArgs, HostUUID: req.HostUUID})
 	} else {
 		r, err = m.Impl.CallDBHelper(method, req.Api, req.Body)
