@@ -9,7 +9,7 @@ import (
 )
 
 func (g *GRPCMarshaller) CreateSchedule(body *model.Schedule, opts ...*Opts) (*model.Schedule, error) {
-	api := "/api/schedule"
+	api := "/api/schedules"
 	res, err := g.CallDBHelperWithParser(nhttp.POST, api, body, opts...)
 	if err != nil {
 		return nil, err
@@ -102,7 +102,7 @@ func (g *GRPCMarshaller) UpdateScheduleAllProps(uuid string, body *model.Schedul
 }
 
 func (g *GRPCMarshaller) DeleteSchedule(uuid string, opts ...*Opts) error {
-	api := fmt.Sprintf("/api/schedule/%s", uuid)
+	api := fmt.Sprintf("/api/schedules/%s", uuid)
 	_, err := g.DbHelper.CallDBHelper(nhttp.DELETE, api, nil, opts...)
 	return err
 }

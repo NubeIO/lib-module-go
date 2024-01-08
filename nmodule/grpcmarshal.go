@@ -172,7 +172,7 @@ type Marshaller interface {
 	DiscUsage(opts ...*Opts) ([]*ostats.MountingPoint, error)
 	DiscUsagePretty(opts ...*Opts) ([]*dto.Disk, error)
 
-	GetHistoriesForPostgresSync(lastSyncId int, opts ...*Opts) ([]*model.History, error)
+	GetHistoriesForPostgresSync(opts ...*Opts) ([]*model.History, error)
 	GetPointsForPostgresSync(opts ...*Opts) ([]*dto.PointForPostgresSync, error)
 	GetNetworksTagsForPostgresSync(opts ...*Opts) ([]*dto.NetworkTagForPostgresSync, error)
 	GetDevicesTagsForPostgresSync(opts ...*Opts) ([]*dto.DeviceTagForPostgresSync, error)

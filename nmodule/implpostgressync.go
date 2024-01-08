@@ -5,18 +5,10 @@ import (
 	"github.com/NubeIO/lib-module-go/nhttp"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/dto"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
-	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
-	"strconv"
 )
 
-func (g *GRPCMarshaller) GetHistoriesForPostgresSync(lastSyncId int, opts ...*Opts) ([]*model.History, error) {
+func (g *GRPCMarshaller) GetHistoriesForPostgresSync(opts ...*Opts) ([]*model.History, error) {
 	api := "/api/postgres-sync/histories"
-	lastSyncIdStr := strconv.Itoa(lastSyncId)
-	if len(opts) > 0 {
-		opts[0].Args = &nargs.Args{IdGt: &lastSyncIdStr}
-	} else {
-		opts = append(opts, &Opts{Args: &nargs.Args{IdGt: &lastSyncIdStr}})
-	}
 	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
