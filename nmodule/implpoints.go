@@ -95,7 +95,7 @@ func (g *GRPCMarshaller) GetPointWithParent(uuid string, opts ...*Opts) (*dto.Po
 }
 
 func (g *GRPCMarshaller) GetPointWithParentByName(networkName, deviceName, pointName string, opts ...*Opts) (*dto.PointWithParent, error) {
-	api := fmt.Sprintf("/api/points//name/%s/%s/%s/with-parents", networkName, deviceName, pointName)
+	api := fmt.Sprintf("/api/points/name/%s/%s/%s/with-parents", networkName, deviceName, pointName)
 	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
 	if err != nil {
 		return nil, err
