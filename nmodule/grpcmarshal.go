@@ -172,6 +172,7 @@ type Marshaller interface {
 	DiscUsage(opts ...*Opts) ([]*ostats.MountingPoint, error)
 	DiscUsagePretty(opts ...*Opts) ([]*dto.Disk, error)
 
+	GetHistoriesForSync(opts ...*Opts) (*dto.HistorySync, error)
 	GetHistoriesForPostgresSync(opts ...*Opts) ([]*model.History, error)
 	GetPointsForPostgresSync(opts ...*Opts) ([]*dto.PointForPostgresSync, error)
 	GetNetworksTagsForPostgresSync(opts ...*Opts) ([]*dto.NetworkTagForPostgresSync, error)
@@ -184,7 +185,7 @@ type Marshaller interface {
 	UpdateLastSyncHistoryRowForPostgresSync(log *model.HistoryPostgresLog, opts ...*Opts) (*model.HistoryPostgresLog, error)
 
 	GetHistoryLogByHostUUID(hostUUID string, opts ...*Opts) (*model.HistoryLog, error)
-	UpdateBulkHistoryLogs(logs []*model.HistoryLog, opts ...*Opts) (bool, error)
+	UpdateHistoryLog(body *model.HistoryLog, opts ...*Opts) (bool, error)
 
 	Publish(topic string, qos datatype.QOS, retain bool, payload string, opts ...*Opts) error
 	PublishNonBuffer(topic string, qos datatype.QOS, retain bool, payload string, opts ...*Opts) error
