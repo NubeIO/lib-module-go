@@ -21,11 +21,8 @@ func (g *GRPCMarshaller) GetHistoryLogByHostUUID(hostUUID string, opts ...*Opts)
 	return historyLog, nil
 }
 
-func (g *GRPCMarshaller) UpdateBulkHistoryLogs(logs []*model.HistoryLog, opts ...*Opts) (bool, error) {
+func (g *GRPCMarshaller) UpdateHistoryLog(body *model.HistoryLog, opts ...*Opts) (bool, error) {
 	api := "/api/history-logs"
-	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, logs, opts...)
-	if err != nil {
-		return false, err
-	}
-	return true, nil
+	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, body, opts...)
+	return err == nil, err
 }

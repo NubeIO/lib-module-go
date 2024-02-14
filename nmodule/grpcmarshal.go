@@ -115,6 +115,7 @@ type Marshaller interface {
 	CreateHistories(histories []*model.History, opts ...*Opts) (bool, error)
 	GetHistories(historyRequest *dto.HistoryRequest, opts ...*Opts) (*dto.HistoryResponse, error)
 	GetLatestHistoryByHostAndPointUUID(hostUUID, pointUUID string, opts ...*Opts) (*model.History, error)
+	GetHistoriesForSync(opts ...*Opts) (*dto.HistorySync, error)
 	DeleteHistories(opts ...*Opts) error
 
 	CreatePointHistories(histories []*model.PointHistory, opts ...*Opts) (bool, error)
@@ -184,7 +185,7 @@ type Marshaller interface {
 	UpdateLastSyncHistoryRowForPostgresSync(log *model.HistoryPostgresLog, opts ...*Opts) (*model.HistoryPostgresLog, error)
 
 	GetHistoryLogByHostUUID(hostUUID string, opts ...*Opts) (*model.HistoryLog, error)
-	UpdateBulkHistoryLogs(logs []*model.HistoryLog, opts ...*Opts) (bool, error)
+	UpdateHistoryLog(body *model.HistoryLog, opts ...*Opts) (bool, error)
 
 	Publish(topic string, qos datatype.QOS, retain bool, payload string, opts ...*Opts) error
 	PublishNonBuffer(topic string, qos datatype.QOS, retain bool, payload string, opts ...*Opts) error
