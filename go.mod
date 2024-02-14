@@ -8,7 +8,7 @@ require (
 	github.com/NubeIO/lib-date v0.0.6
 	github.com/NubeIO/lib-networking v0.1.0
 	github.com/NubeIO/lib-system v0.0.3
-	github.com/NubeIO/nubeio-rubix-lib-models-go v1.12.0
+	github.com/NubeIO/nubeio-rubix-lib-models-go v1.14.0
 	github.com/hashicorp/go-plugin v1.4.9
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.7.0
