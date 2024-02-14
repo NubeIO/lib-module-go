@@ -115,6 +115,7 @@ type Marshaller interface {
 	CreateHistories(histories []*model.History, opts ...*Opts) (bool, error)
 	GetHistories(historyRequest *dto.HistoryRequest, opts ...*Opts) (*dto.HistoryResponse, error)
 	GetLatestHistoryByHostAndPointUUID(hostUUID, pointUUID string, opts ...*Opts) (*model.History, error)
+	GetHistoriesForSync(opts ...*Opts) (*dto.HistorySync, error)
 	DeleteHistories(opts ...*Opts) error
 
 	CreatePointHistories(histories []*model.PointHistory, opts ...*Opts) (bool, error)
@@ -172,7 +173,6 @@ type Marshaller interface {
 	DiscUsage(opts ...*Opts) ([]*ostats.MountingPoint, error)
 	DiscUsagePretty(opts ...*Opts) ([]*dto.Disk, error)
 
-	GetHistoriesForSync(opts ...*Opts) (*dto.HistorySync, error)
 	GetHistoriesForPostgresSync(opts ...*Opts) ([]*model.History, error)
 	GetPointsForPostgresSync(opts ...*Opts) ([]*dto.PointForPostgresSync, error)
 	GetNetworksTagsForPostgresSync(opts ...*Opts) ([]*dto.NetworkTagForPostgresSync, error)
