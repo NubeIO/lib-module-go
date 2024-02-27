@@ -37,18 +37,21 @@ func (m *GRPCClient) Init(dbHelper DBHelper, moduleName string) error {
 	})
 
 	// s.Stop() // TODO: we haven't closed this
+	err = ExtractRPCErrorMessage(err)
 	return err
 }
 
 func (m *GRPCClient) Enable() error {
 	log.Debug("gRPC Enable client has been called...")
 	_, err := m.client.Enable(context.Background(), &proto.Empty{})
+	err = ExtractRPCErrorMessage(err)
 	return err
 }
 
 func (m *GRPCClient) Disable() error {
 	log.Debug("gRPC Disable client has been called...")
 	_, err := m.client.Disable(context.Background(), &proto.Empty{})
+	err = ExtractRPCErrorMessage(err)
 	return err
 }
 
@@ -56,6 +59,7 @@ func (m *GRPCClient) ValidateAndSetConfig(config []byte) ([]byte, error) {
 	log.Debug("gRPC ValidateAndSetConfig client has been called...")
 	resp, err := m.client.ValidateAndSetConfig(context.Background(), &proto.ConfigBody{Config: config})
 	if err != nil {
+		err = ExtractRPCErrorMessage(err)
 		return nil, err
 	}
 	return resp.R, nil
@@ -65,6 +69,7 @@ func (m *GRPCClient) GetInfo() (*Info, error) {
 	log.Debug("gRPC GetInfo client has been called...")
 	resp, err := m.client.GetInfo(context.Background(), &proto.Empty{})
 	if err != nil {
+		err = ExtractRPCErrorMessage(err)
 		return nil, err
 	}
 	return &Info{
@@ -97,6 +102,7 @@ func (m *GRPCClient) CallModule(method nhttp.Method, urlString string, headers h
 		Body:      body,
 	})
 	if err != nil {
+		err = ExtractRPCErrorMessage(err)
 		return nil, err
 	}
 	return resp.R, nil
@@ -115,6 +121,7 @@ func (m *GRPCDBHelperClient) CallDBHelper(method nhttp.Method, api string, body 
 			if opts[0].Args != nil {
 				apiArgs, err = nargs.SerializeArgs(*opts[0].Args)
 				if err != nil {
+					err = ExtractRPCErrorMessage(err)
 					return nil, err
 				}
 			}
@@ -129,6 +136,7 @@ func (m *GRPCDBHelperClient) CallDBHelper(method nhttp.Method, api string, body 
 		HostUUID: hostUUID,
 	})
 	if err != nil {
+		err = ExtractRPCErrorMessage(err)
 		return nil, err
 	}
 	if resp.E != nil {
