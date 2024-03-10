@@ -114,6 +114,7 @@ type Marshaller interface {
 
 	CreateHistories(histories []*model.History, opts ...*Opts) (bool, error)
 	GetHistories(historyRequest *dto.HistoryRequest, opts ...*Opts) (*dto.HistoryResponse, error)
+	GetHistoriesFromSqlite(historyRequest *dto.HistoryRequest, opts ...*Opts) (*dto.HistoryResponse, error)
 	GetLatestHistoryByHostAndPointUUID(hostUUID, pointUUID string, opts ...*Opts) (*model.History, error)
 	GetHistoriesForSync(opts ...*Opts) (*dto.HistorySync, error)
 	DeleteHistories(opts ...*Opts) error
@@ -189,6 +190,9 @@ type Marshaller interface {
 
 	Publish(topic string, qos datatype.QOS, retain bool, payload string, opts ...*Opts) error
 	PublishNonBuffer(topic string, qos datatype.QOS, retain bool, payload string, opts ...*Opts) error
+
+	SendEmail(body *model.Email, opts ...*Opts) (*model.Email, error)
+	GetAttachmentDir(opts ...*Opts) (*string, error)
 }
 
 func New(dbHelper DBHelper) *GRPCMarshaller {
