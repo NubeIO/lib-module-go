@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/NubeIO/lib-module-go/nhttp"
+	"github.com/NubeIO/nubeio-rubix-lib-models-go/dto"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
 	"strconv"
 )
@@ -22,9 +23,9 @@ func (g *GRPCMarshaller) CreateDevice(body *model.Device, opts ...*Opts) (*model
 	return device, nil
 }
 
-func (g *GRPCMarshaller) GetDevices(opts ...*Opts) ([]*model.Device, error) {
+func (g *GRPCMarshaller) GetDevices(body *dto.Filter, opts ...*Opts) ([]*model.Device, error) {
 	api := "/api/devices"
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
+	res, err := g.CallDBHelperWithParser(nhttp.GET, api, body, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -78,9 +79,9 @@ func (g *GRPCMarshaller) GetOneDeviceByArgs(opts ...*Opts) (*model.Device, error
 	return device, nil
 }
 
-func (g *GRPCMarshaller) CountDevices(opts ...*Opts) (int, error) {
+func (g *GRPCMarshaller) CountDevices(body *dto.Filter, opts ...*Opts) (int, error) {
 	api := fmt.Sprintf("/api/devices/count")
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
+	res, err := g.CallDBHelperWithParser(nhttp.GET, api, body, opts...)
 	if err != nil {
 		return 0, err
 	}

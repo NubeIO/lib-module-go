@@ -23,9 +23,9 @@ func (g *GRPCMarshaller) CreatePoint(body *model.Point, opts ...*Opts) (*model.P
 	return point, nil
 }
 
-func (g *GRPCMarshaller) GetPoints(opts ...*Opts) ([]*model.Point, error) {
+func (g *GRPCMarshaller) GetPoints(body *dto.Filter, opts ...*Opts) ([]*model.Point, error) {
 	api := "/api/points"
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
+	res, err := g.CallDBHelperWithParser(nhttp.GET, api, body, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -108,9 +108,9 @@ func (g *GRPCMarshaller) GetPointWithParentByName(networkName, deviceName, point
 	return pointWithParent, nil
 }
 
-func (g *GRPCMarshaller) CountPoints(opts ...*Opts) (int, error) {
+func (g *GRPCMarshaller) CountPoints(body *dto.Filter, opts ...*Opts) (int, error) {
 	api := fmt.Sprintf("/api/points/count")
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
+	res, err := g.CallDBHelperWithParser(nhttp.GET, api, body, opts...)
 	if err != nil {
 		return 0, err
 	}
