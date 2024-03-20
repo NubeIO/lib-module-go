@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/NubeIO/lib-module-go/nhttp"
+	"github.com/NubeIO/nubeio-rubix-lib-models-go/dto"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/nargs"
 	"strconv"
@@ -23,9 +24,9 @@ func (g *GRPCMarshaller) CreateNetwork(body *model.Network, opts ...*Opts) (*mod
 	return network, nil
 }
 
-func (g *GRPCMarshaller) GetNetworks(opts ...*Opts) ([]*model.Network, error) {
+func (g *GRPCMarshaller) GetNetworks(body *dto.Filter, opts ...*Opts) ([]*model.Network, error) {
 	api := "/api/networks"
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
+	res, err := g.CallDBHelperWithParser(nhttp.GET, api, body, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -135,9 +136,9 @@ func (g *GRPCMarshaller) GetNetworksByPluginName(pluginName string, opts ...*Opt
 	return networks, nil
 }
 
-func (g *GRPCMarshaller) CountNetworks(opts ...*Opts) (int, error) {
+func (g *GRPCMarshaller) CountNetworks(body *dto.Filter, opts ...*Opts) (int, error) {
 	api := fmt.Sprintf("/api/networks/count")
-	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
+	res, err := g.CallDBHelperWithParser(nhttp.GET, api, body, opts...)
 	if err != nil {
 		return 0, err
 	}

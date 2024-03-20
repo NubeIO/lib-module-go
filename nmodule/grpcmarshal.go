@@ -21,7 +21,7 @@ type Opts struct {
 
 type Marshaller interface {
 	CreateNetwork(body *model.Network, opts ...*Opts) (*model.Network, error)
-	GetNetworks(opts ...*Opts) ([]*model.Network, error)
+	GetNetworks(body *dto.Filter, opts ...*Opts) ([]*model.Network, error)
 	GetNetwork(uuid string, opts ...*Opts) (*model.Network, error)
 	GetNetworkByName(networkName string, opts ...*Opts) (*model.Network, error)
 	GetOneNetworkByArgs(opts ...*Opts) (*model.Network, error)
@@ -30,7 +30,7 @@ type Marshaller interface {
 	GetNetworkByPluginName(pluginName string, opts ...*Opts) (*model.Network, error)
 	GetNetworksByPluginName(pluginName string, opts ...*Opts) ([]*model.Network, error)
 	UpdateNetwork(uuid string, body *model.Network, opts ...*Opts) (*model.Network, error)
-	CountNetworks(opts ...*Opts) (int, error)
+	CountNetworks(body *dto.Filter, opts ...*Opts) (int, error)
 	UpdateNetworkErrors(uuid string, body *model.Network, opts ...*Opts) error
 	UpdateNetworkDescendantsErrors(networkUUID, message, messageLevel, messageCode string, withPoints bool, opts ...*Opts) error
 	UpsertNetworkMetaTags(uuid string, body []*model.NetworkMetaTag, opts ...*Opts) error
@@ -41,11 +41,11 @@ type Marshaller interface {
 	ClearNetworkDescendantsErrors(networkUUID string, withPoints bool, opts ...*Opts) error
 
 	CreateDevice(body *model.Device, opts ...*Opts) (*model.Device, error)
-	GetDevices(opts ...*Opts) ([]*model.Device, error)
+	GetDevices(body *dto.Filter, opts ...*Opts) ([]*model.Device, error)
 	GetDevice(uuid string, opts ...*Opts) (*model.Device, error)
 	GetDeviceByName(networkName, deviceName string, opts ...*Opts) (*model.Device, error)
 	GetOneDeviceByArgs(opts ...*Opts) (*model.Device, error)
-	CountDevices(opts ...*Opts) (int, error)
+	CountDevices(body *dto.Filter, opts ...*Opts) (int, error)
 	UpdateDevice(uuid string, body *model.Device, opts ...*Opts) (*model.Device, error)
 	UpdateDeviceErrors(uuid string, body *model.Device, opts ...*Opts) error
 	UpdateDeviceDescendantsErrors(deviceUUID, message, messageLevel, messageCode string, opts ...*Opts) error
@@ -57,13 +57,13 @@ type Marshaller interface {
 	ClearDeviceDescendantsErrors(deviceUUID string, opts ...*Opts) error
 
 	CreatePoint(body *model.Point, opts ...*Opts) (*model.Point, error)
-	GetPoints(opts ...*Opts) ([]*model.Point, error)
+	GetPoints(body *dto.Filter, opts ...*Opts) ([]*model.Point, error)
 	GetPoint(uuid string, opts ...*Opts) (*model.Point, error)
 	GetPointByName(networkName, deviceName, pointName string, opts ...*Opts) (*model.Point, error)
 	GetOnePointByArgs(opts ...*Opts) (*model.Point, error)
 	GetPointWithParent(uuid string, opts ...*Opts) (*dto.PointWithParent, error)
 	GetPointWithParentByName(networkName, deviceName, pointName string, opts ...*Opts) (*dto.PointWithParent, error)
-	CountPoints(opts ...*Opts) (int, error)
+	CountPoints(body *dto.Filter, opts ...*Opts) (int, error)
 	UpdatePoint(uuid string, body *model.Point, opts ...*Opts) (*model.Point, error)
 	PointWrite(uuid string, body *dto.PointWriter, opts ...*Opts) (*dto.PointWriteResponse, error)
 	PointWriteByName(networkName, deviceName, pointName string, body *dto.PointWriter, opts ...*Opts) (*dto.PointWriteResponse, error)
