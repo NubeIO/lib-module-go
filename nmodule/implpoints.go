@@ -107,6 +107,19 @@ func (g *GRPCMarshaller) GetPointWithParentByName(networkName, deviceName, point
 	}
 	return pointWithParent, nil
 }
+func (g *GRPCMarshaller) GetPointsForHistorySync(opts ...*Opts) ([]*dto.PointForHistorySync, error) {
+	api := "/api/points/history-sync"
+	res, err := g.DbHelper.CallDBHelper(nhttp.GET, api, nil, opts...)
+	if err != nil {
+		return nil, err
+	}
+	var points []*dto.PointForHistorySync
+	err = json.Unmarshal(res, &points)
+	if err != nil {
+		return nil, err
+	}
+	return points, nil
+}
 
 func (g *GRPCMarshaller) CountPoints(body *dto.Filter, opts ...*Opts) (int, error) {
 	api := fmt.Sprintf("/api/points/count")
