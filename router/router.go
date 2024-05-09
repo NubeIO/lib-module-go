@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/NubeIO/lib-module-go/nhttp"
 	"github.com/NubeIO/lib-module-go/nmodule"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"net/url"
 	"sort"
@@ -98,7 +99,9 @@ func (router *Router) CallHandler(module *nmodule.Module, method nhttp.Method, u
 	}
 	orderedPatterns := router.OrderPatterns()
 	for _, pattern := range orderedPatterns {
+		log.Errorf("pattern %v %v", pattern, parsedURL.Path)
 		if params, ok := match(pattern, parsedURL.Path); ok {
+			log.Errorf("pattern match %v", urlString)
 			if handlers, exists := router.routes[pattern]; exists {
 				if handler, exists := handlers[method]; exists {
 					return handler(module, &Request{
@@ -121,7 +124,7 @@ func match(pattern, path string) (map[string]string, bool) {
 	patternSegments := strings.Split(pattern, "/")
 	pathSegments := strings.Split(path, "/")
 
-	if len(patternSegments) != len(pathSegments) {
+	if len(patternSegments) != len(pathSegments) && !strings.HasSuffix(pattern, "*") {
 		return nil, false
 	}
 
