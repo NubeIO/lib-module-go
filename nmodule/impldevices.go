@@ -102,8 +102,8 @@ func (g *GRPCMarshaller) UpdateDevice(uuid string, body *model.Device, opts ...*
 	return device, nil
 }
 
-func (g *GRPCMarshaller) UpdateDeviceErrors(uuid string, body *model.Device, opts ...*Opts) error {
-	api := fmt.Sprintf("/api/devices/%s/error", uuid)
+func (g *GRPCMarshaller) UpdateDeviceFault(uuid string, body *model.CommonFault, opts ...*Opts) error {
+	api := fmt.Sprintf("/api/devices/%s/fault", uuid)
 	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, body, opts...)
 	if err != nil {
 		return err
@@ -111,16 +111,9 @@ func (g *GRPCMarshaller) UpdateDeviceErrors(uuid string, body *model.Device, opt
 	return nil
 }
 
-func (g *GRPCMarshaller) UpdateDeviceDescendantsErrors(deviceUUID, message, messageLevel, messageCode string, opts ...*Opts) error {
-	api := fmt.Sprintf("/api/devices/%s/error/descendants", deviceUUID)
-	device := &model.Device{
-		CommonFault: model.CommonFault{
-			Message:      message,
-			MessageLevel: messageLevel,
-			MessageCode:  messageCode,
-		},
-	}
-	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, device, opts...)
+func (g *GRPCMarshaller) UpdateDeviceDescendantsFault(deviceUUID string, body *model.CommonFault, opts ...*Opts) error {
+	api := fmt.Sprintf("/api/devices/%s/fault/descendants", deviceUUID)
+	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, body, opts...)
 	return err
 }
 
