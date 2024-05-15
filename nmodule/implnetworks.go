@@ -159,8 +159,8 @@ func (g *GRPCMarshaller) UpdateNetwork(uuid string, body *model.Network, opts ..
 	return network, nil
 }
 
-func (g *GRPCMarshaller) UpdateNetworkErrors(uuid string, body *model.Network, opts ...*Opts) error {
-	api := fmt.Sprintf("/api/networks/%s/error", uuid)
+func (g *GRPCMarshaller) UpdateNetworkFault(uuid string, body *model.CommonFault, opts ...*Opts) error {
+	api := fmt.Sprintf("/api/networks/%s/fault", uuid)
 	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, body, opts...)
 	if err != nil {
 		return err
@@ -168,21 +168,14 @@ func (g *GRPCMarshaller) UpdateNetworkErrors(uuid string, body *model.Network, o
 	return nil
 }
 
-func (g *GRPCMarshaller) UpdateNetworkDescendantsErrors(networkUUID, message, messageLevel, messageCode string, withPoints bool, opts ...*Opts) error {
-	api := fmt.Sprintf("/api/networks/%s/error/descendants", networkUUID)
-	network := &model.Network{
-		CommonFault: model.CommonFault{
-			Message:      message,
-			MessageLevel: messageLevel,
-			MessageCode:  messageCode,
-		},
-	}
+func (g *GRPCMarshaller) UpdateNetworkDescendantsFault(networkUUID string, body *model.CommonFault, withPoints bool, opts ...*Opts) error {
+	api := fmt.Sprintf("/api/networks/%s/fault/descendants", networkUUID)
 	if len(opts) > 0 {
 		opts[0].Args = &nargs.Args{WithPoints: withPoints}
 	} else {
 		opts = append(opts, &Opts{Args: &nargs.Args{WithPoints: withPoints}})
 	}
-	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, network, opts...)
+	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, body, opts...)
 	return err
 }
 

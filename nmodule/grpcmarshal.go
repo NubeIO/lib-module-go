@@ -31,8 +31,8 @@ type Marshaller interface {
 	GetNetworksByPluginName(pluginName string, opts ...*Opts) ([]*model.Network, error)
 	UpdateNetwork(uuid string, body *model.Network, opts ...*Opts) (*model.Network, error)
 	CountNetworks(body *dto.Filter, opts ...*Opts) (int, error)
-	UpdateNetworkErrors(uuid string, body *model.Network, opts ...*Opts) error
-	UpdateNetworkDescendantsErrors(networkUUID, message, messageLevel, messageCode string, withPoints bool, opts ...*Opts) error
+	UpdateNetworkFault(uuid string, body *model.CommonFault, opts ...*Opts) error
+	UpdateNetworkDescendantsFault(networkUUID string, body *model.CommonFault, withPoints bool, opts ...*Opts) error
 	UpsertNetworkMetaTags(uuid string, body []*model.NetworkMetaTag, opts ...*Opts) error
 	UpsertNetworkTags(uuid string, body []*model.Tag, opts ...*Opts) error
 	DeleteNetwork(uuid string, opts ...*Opts) error
@@ -47,8 +47,8 @@ type Marshaller interface {
 	GetOneDeviceByArgs(opts ...*Opts) (*model.Device, error)
 	CountDevices(body *dto.Filter, opts ...*Opts) (int, error)
 	UpdateDevice(uuid string, body *model.Device, opts ...*Opts) (*model.Device, error)
-	UpdateDeviceErrors(uuid string, body *model.Device, opts ...*Opts) error
-	UpdateDeviceDescendantsErrors(deviceUUID, message, messageLevel, messageCode string, opts ...*Opts) error
+	UpdateDeviceFault(uuid string, body *model.CommonFault, opts ...*Opts) error
+	UpdateDeviceDescendantsFault(deviceUUID string, body *model.CommonFault, opts ...*Opts) error
 	UpsertDeviceMetaTags(uuid string, body []*model.DeviceMetaTag, opts ...*Opts) error
 	UpsertDeviceTags(uuid string, body []*model.Tag, opts ...*Opts) error
 	DeleteDevice(uuid string, opts ...*Opts) error
@@ -67,8 +67,7 @@ type Marshaller interface {
 	UpdatePoint(uuid string, body *model.Point, opts ...*Opts) (*model.Point, error)
 	PointWrite(uuid string, body *dto.PointWriter, opts ...*Opts) (*dto.PointWriteResponse, error)
 	PointWriteByName(networkName, deviceName, pointName string, body *dto.PointWriter, opts ...*Opts) (*dto.PointWriteResponse, error)
-	UpdatePointErrors(uuid string, body *model.Point, opts ...*Opts) error
-	UpdatePointSuccess(uuid string, body *model.Point, opts ...*Opts) error
+	UpdatePointFault(uuid string, body *model.CommonFault, opts ...*Opts) error
 	UpsertPoint(uuid string, body *model.Point, opts ...*Opts) (*model.Point, error)
 	UpsertPointMetaTags(uuid string, body []*model.PointMetaTag, opts ...*Opts) error
 	UpsertPointTags(uuid string, body []*model.Tag, opts ...*Opts) error

@@ -153,17 +153,8 @@ func (g *GRPCMarshaller) PointWriteByName(networkName, deviceName, pointName str
 	return pwr, nil
 }
 
-func (g *GRPCMarshaller) UpdatePointErrors(uuid string, body *model.Point, opts ...*Opts) error {
-	api := fmt.Sprintf("/api/points/%s/error", uuid)
-	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, body, opts...)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (g *GRPCMarshaller) UpdatePointSuccess(uuid string, body *model.Point, opts ...*Opts) error {
-	api := fmt.Sprintf("/api/points/%s/success", uuid)
+func (g *GRPCMarshaller) UpdatePointFault(uuid string, body *model.CommonFault, opts ...*Opts) error {
+	api := fmt.Sprintf("/api/points/%s/fault", uuid)
 	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, body, opts...)
 	if err != nil {
 		return err
