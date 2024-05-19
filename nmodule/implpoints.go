@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/NubeIO/lib-module-go/nhttp"
+	"github.com/NubeIO/nubeio-rubix-lib-models-go/datatype"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/dto"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/model"
 	"strconv"
@@ -155,6 +156,15 @@ func (g *GRPCMarshaller) PointWriteByName(networkName, deviceName, pointName str
 
 func (g *GRPCMarshaller) UpdatePointFault(uuid string, body *model.CommonFault, opts ...*Opts) error {
 	api := fmt.Sprintf("/api/points/%s/fault", uuid)
+	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, body, opts...)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (g *GRPCMarshaller) UpdatePointState(uuid string, body datatype.PointState, opts ...*Opts) error {
+	api := fmt.Sprintf("/api/points/%s/state", uuid)
 	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, body, opts...)
 	if err != nil {
 		return err
