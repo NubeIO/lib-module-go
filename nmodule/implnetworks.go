@@ -208,14 +208,3 @@ func (g *GRPCMarshaller) DeleteNetworkByName(name string, opts ...*Opts) error {
 	_, err := g.DbHelper.CallDBHelper(nhttp.DELETE, api, nil, opts...)
 	return err
 }
-
-func (g *GRPCMarshaller) ClearNetworkDescendantsErrors(networkUUID string, withPoints bool, opts ...*Opts) error {
-	api := fmt.Sprintf("/api/networks/%s/error/descendants", networkUUID)
-	if len(opts) > 0 {
-		opts[0].Args = &nargs.Args{WithPoints: withPoints}
-	} else {
-		opts = append(opts, &Opts{Args: &nargs.Args{WithPoints: withPoints}})
-	}
-	_, err := g.DbHelper.CallDBHelper(nhttp.DELETE, api, nil, opts...)
-	return err
-}

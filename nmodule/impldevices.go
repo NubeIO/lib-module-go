@@ -146,9 +146,3 @@ func (g *GRPCMarshaller) DeleteDeviceByName(name string, opts ...*Opts) error {
 	_, err := g.DbHelper.CallDBHelper(nhttp.DELETE, api, nil, opts...)
 	return err
 }
-
-func (g *GRPCMarshaller) ClearDeviceDescendantsErrors(deviceUUID string, opts ...*Opts) error {
-	api := fmt.Sprintf("/api/devices/%s/error/descendants", deviceUUID)
-	_, err := g.DbHelper.CallDBHelper(nhttp.DELETE, api, nil, opts...)
-	return err
-}
