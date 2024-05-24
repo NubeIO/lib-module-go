@@ -38,7 +38,6 @@ type Marshaller interface {
 	DeleteNetwork(uuid string, opts ...*Opts) error
 	DeleteOneNetworkByArgs(opts ...*Opts) error
 	DeleteNetworkByName(name string, opts ...*Opts) error
-	ClearNetworkDescendantsErrors(networkUUID string, withPoints bool, opts ...*Opts) error
 
 	CreateDevice(body *model.Device, opts ...*Opts) (*model.Device, error)
 	GetDevices(body *dto.Filter, opts ...*Opts) ([]*model.Device, error)
@@ -54,7 +53,6 @@ type Marshaller interface {
 	DeleteDevice(uuid string, opts ...*Opts) error
 	DeleteOneDeviceByArgs(opts ...*Opts) error
 	DeleteDeviceByName(name string, opts ...*Opts) error
-	ClearDeviceDescendantsErrors(deviceUUID string, opts ...*Opts) error
 
 	CreatePoint(body *model.Point, opts ...*Opts) (*model.Point, error)
 	GetPoints(body *dto.Filter, opts ...*Opts) ([]*model.Point, error)
