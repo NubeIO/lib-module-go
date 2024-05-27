@@ -68,6 +68,7 @@ type Marshaller interface {
 	PointWriteByName(networkName, deviceName, pointName string, body *dto.PointWriter, opts ...*Opts) (*dto.PointWriteResponse, error)
 	UpdatePointFault(uuid string, body *model.CommonFault, opts ...*Opts) error
 	UpdatePointState(uuid string, body datatype.PointState, opts ...*Opts) error
+	UpdatePointPollState(uuid string, body dto.PointPollState, opts ...*Opts) error
 	UpsertPoint(uuid string, body *model.Point, opts ...*Opts) (*model.Point, error)
 	UpsertPointMetaTags(uuid string, body []*model.PointMetaTag, opts ...*Opts) error
 	UpsertPointTags(uuid string, body []*model.Tag, opts ...*Opts) error
