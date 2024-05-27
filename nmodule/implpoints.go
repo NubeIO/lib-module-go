@@ -185,6 +185,15 @@ func (g *GRPCMarshaller) UpdatePointState(uuid string, body datatype.PointState,
 	return nil
 }
 
+func (g *GRPCMarshaller) UpdatePointPollState(uuid string, body dto.PointPollState, opts ...*Opts) error {
+	api := fmt.Sprintf("/api/points/%s/poll-state", uuid)
+	_, err := g.CallDBHelperWithParser(nhttp.PATCH, api, body, opts...)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (g *GRPCMarshaller) UpsertPoint(uuid string, body *model.Point, opts ...*Opts) (*model.Point, error) {
 	api := fmt.Sprintf("/api/points/%s", uuid)
 	res, err := g.CallDBHelperWithParser(nhttp.PUT, api, body, opts...)
