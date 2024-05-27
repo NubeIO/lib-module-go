@@ -61,6 +61,7 @@ type Marshaller interface {
 	GetOnePointByArgs(opts ...*Opts) (*model.Point, error)
 	GetPointWithParent(uuid string, opts ...*Opts) (*dto.PointWithParent, error)
 	GetPointWithParentByName(networkName, deviceName, pointName string, opts ...*Opts) (*dto.PointWithParent, error)
+	GetPointsForHistorySync(opts ...*Opts) ([]*dto.PointForHistorySync, error)
 	CountPoints(body *dto.Filter, opts ...*Opts) (int, error)
 	UpdatePoint(uuid string, body *model.Point, opts ...*Opts) (*model.Point, error)
 	PointWrite(uuid string, body *dto.PointWriter, opts ...*Opts) (*dto.PointWriteResponse, error)
