@@ -23,6 +23,10 @@ func (m *GRPCClient) Init(dbHelper DBHelper, moduleName string) error {
 	dbHelperServer := &GRPCDBHelperServer{Impl: dbHelper}
 	var s *grpc.Server
 	serverFunc := func(opts []grpc.ServerOption) *grpc.Server {
+		maxSize := 50
+		opts = append(opts,
+			grpc.MaxRecvMsgSize(maxSize*1048*1048),
+			grpc.MaxSendMsgSize(maxSize*1048*1048))
 		s = grpc.NewServer(opts...)
 		proto.RegisterDBHelperServer(s, dbHelperServer)
 
