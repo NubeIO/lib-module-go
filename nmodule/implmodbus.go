@@ -6,7 +6,7 @@ import (
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/dto"
 )
 
-func (g *GRPCMarshaller) WriteValueManually(body *dto.ManualPointWriteValue, opts ...*Opts) (*dto.ManualPointWriteValueResponse, error) {
+func (g *GRPCMarshaller) ModbusWriteValueManually(body *dto.ManualPointWriteValue, opts ...*Opts) (*dto.ManualPointWriteValueResponse, error) {
 	api := "/api/modules/module-core-modbus/api/manual-write-value"
 	res, err := g.CallDBHelperWithParser(nhttp.POST, api, body, opts...)
 	if err != nil {
@@ -20,7 +20,7 @@ func (g *GRPCMarshaller) WriteValueManually(body *dto.ManualPointWriteValue, opt
 	return manualPointWriteValueResponse, nil
 }
 
-func (g *GRPCMarshaller) SetModbusCommissioning(body *dto.CommissioningToolRequest, opts ...*Opts) (*dto.CommissioningToolResponse, error) {
+func (g *GRPCMarshaller) ModbusSetCommissioning(body *dto.CommissioningToolRequest, opts ...*Opts) (*dto.CommissioningToolResponse, error) {
 	api := "/api/modules/module-core-modbus/api/commissioning"
 	res, err := g.CallDBHelperWithParser(nhttp.POST, api, body, opts...)
 	if err != nil {
