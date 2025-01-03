@@ -193,6 +193,8 @@ type Marshaller interface {
 
 	SendEmail(body *model.Email, opts ...*Opts) (*model.Email, error)
 	GetAttachmentDir(opts ...*Opts) (*string, error)
+
+	PostgresRawQuery(body *dto.QueryBody, opts ...*Opts) (*dto.QueryResponse, error)
 }
 
 func New(dbHelper DBHelper) *GRPCMarshaller {
