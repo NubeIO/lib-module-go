@@ -195,6 +195,9 @@ type Marshaller interface {
 	GetAttachmentDir(opts ...*Opts) (*string, error)
 
 	PostgresRawQuery(body *dto.QueryBody, opts ...*Opts) (*dto.QueryResponse, error)
+
+	ModbusWriteValueManually(body *dto.ManualPointWriteValue, opts ...*Opts) (*dto.ManualPointWriteValueResponse, error)
+	ModbusSetCommissioning(body *dto.CommissioningToolRequest, opts ...*Opts) (*dto.CommissioningToolResponse, error)
 }
 
 func New(dbHelper DBHelper) *GRPCMarshaller {
